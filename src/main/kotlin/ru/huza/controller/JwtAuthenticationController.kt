@@ -23,7 +23,6 @@ import ru.huza.model.request.AuthRequest
 import ru.huza.model.response.AuthResponse
 import ru.huza.service.UserService
 
-@CrossOrigin
 @RestController
 @RequestMapping(path = ["/auth"])
 class JwtAuthenticationController(

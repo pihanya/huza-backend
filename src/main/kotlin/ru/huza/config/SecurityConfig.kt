@@ -3,16 +3,14 @@ package ru.huza.config
 import com.nimbusds.jose.jwk.JWKSet
 import com.nimbusds.jose.jwk.RSAKey
 import com.nimbusds.jose.jwk.source.ImmutableJWKSet
-import java.security.interfaces.RSAPrivateKey
-import java.security.interfaces.RSAPublicKey
 import java.util.Optional
 import kotlin.reflect.full.cast
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.data.domain.AuditorAware
+import org.springframework.http.HttpMethod
 import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.authentication.AuthenticationProvider
 import org.springframework.security.authentication.ProviderManager
@@ -25,7 +23,6 @@ import org.springframework.security.config.http.SessionCreationPolicy
 import org.springframework.security.core.Authentication
 import org.springframework.security.core.context.SecurityContext
 import org.springframework.security.core.context.SecurityContextHolder
-import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.security.oauth2.jwt.Jwt
 import org.springframework.security.oauth2.jwt.JwtDecoder
@@ -33,8 +30,8 @@ import org.springframework.security.oauth2.jwt.JwtEncoder
 import org.springframework.security.oauth2.jwt.NimbusJwtDecoder
 import org.springframework.security.oauth2.jwt.NimbusJwtEncoder
 import org.springframework.security.web.SecurityFilterChain
+import org.springframework.web.cors.CorsConfiguration
 import ru.huza.security.JwtAuthenticationEntryPoint
-import ru.huza.dto.UserAuthentication
 import ru.huza.service.UserService
 
 @Configuration
@@ -75,19 +72,20 @@ class SecurityConfig {
     fun filterChain(http: HttpSecurity): SecurityFilterChain {
         http
             .csrf { it.disable() }
-            //.csrf { csrf -> csrf.ignoringAntMatchers("/auth/token") }
-            .cors { it.disable() }
+            // .csrf { csrf -> csrf.ignoringAntMatchers("/auth/token") }
+            // .cors { cors -> cors.configurationSource { src -> src. } }
+            .cors { cors -> cors.configurationSource { CorsConfiguration().applyPermitDefaultValues() } }
             .authorizeHttpRequests { authorize ->
                 authorize
-                    //.antMatchers("/").permitAll()
-                    //.antMatchers(HttpMethod.OPTIONS, "**").permitAll()
-                    //.antMatchers(HttpMethod.POST, "/auth/**").permitAll()
+                    // .antMatchers("/").permitAll()
+                    .antMatchers(HttpMethod.OPTIONS, "**").permitAll()
+                    // .antMatchers(HttpMethod.POST, "/auth/**").permitAll()
                     .antMatchers("/auth/login").permitAll()
-                    //.antMatchers("/actuator/**").permitAll()
-                    //.antMatchers("/asset-defs/**").permitAll()
-                    //.antMatchers("/build-orders/**").permitAll()
-                    //.antMatchers("/assets/**").permitAll()
-                    //.antMatchers("/users/**").permitAll()
+                    // .antMatchers("/actuator/**").permitAll()
+                    // .antMatchers("/asset-defs/**").permitAll()
+                    // .antMatchers("/build-orders/**").permitAll()
+                    // .antMatchers("/assets/**").permitAll()
+                    // .antMatchers("/users/**").permitAll()
                     .anyRequest().authenticated()
             }
             .httpBasic(Customizer.withDefaults())

@@ -15,7 +15,6 @@ import ru.huza.dto.UserDto
 import ru.huza.model.request.UserSaveModel
 import ru.huza.service.UserService
 
-@CrossOrigin
 @RestController
 @RequestMapping(path = ["/users"])
 class UserController {

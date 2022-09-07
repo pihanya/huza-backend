@@ -15,7 +15,6 @@ import ru.huza.model.request.BuildOrderCreateRequest
 import ru.huza.model.request.BuildOrderSetStatusRequest
 import ru.huza.service.BuildOrderService
 
-@CrossOrigin
 @RestController
 @RequestMapping(path = ["/build-orders"])
 class BuildOrderController {
