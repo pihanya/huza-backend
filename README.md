@@ -1,5 +1,8 @@
-Dev Env
+# huza-backend
 
+Use Java 17
+
+Setup database:
 ```shell
 docker run -d \
     --name huza-pgsql \
@@ -10,4 +13,28 @@ docker run -d \
     -p 5432:5432 \
     postgres:14.2
 ```
-# huza-backend
+
+
+Build:
+
+```shell
+./gradlew build
+```
+
+Run in dev env:
+
+```shell
+java -jar build/libs/huza-0.0.1-SNAPSHOT.jar \
+    --spring.profiles.active=dev
+```
+
+Test in Dev env:
+
+```shell
+curl --location --request POST '127.0.0.1:4242/api/auth/login' \
+--header 'Content-Type: application/json' \
+--data-raw '{
+    "email": "admin@itmo.ru",
+    "password": "password"
+}'
+```

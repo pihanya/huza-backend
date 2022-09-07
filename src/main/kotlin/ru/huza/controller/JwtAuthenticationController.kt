@@ -5,7 +5,6 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Lazy
 import org.springframework.http.ResponseEntity
 import org.springframework.security.authentication.AuthenticationManager
-import org.springframework.security.authentication.BadCredentialsException
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.crypto.password.PasswordEncoder
@@ -20,12 +19,9 @@ import org.springframework.web.bind.annotation.RestController
 import ru.huza.config.JwtProperties
 import ru.huza.dao.UserDao
 import ru.huza.dto.UserDto
-import ru.huza.entity.User
 import ru.huza.model.request.AuthRequest
 import ru.huza.model.response.AuthResponse
 import ru.huza.service.UserService
-import ru.huza.util.JwtTokenUtils
-
 
 @CrossOrigin
 @RestController
@@ -35,14 +31,12 @@ class JwtAuthenticationController(
     private val passwordEncoder: PasswordEncoder,
     private val userService: UserService,
 
-    private val userDao: UserDao,
+    private val userDao: UserDao
 ) {
 
     @set:Autowired(required = false)
     @set:Lazy
     lateinit var authenticationManager: AuthenticationManager
-
-    private val jwtTokenUtil: JwtTokenUtils = JwtTokenUtils(jwtProperties)
 
     @Autowired
     lateinit var encoder: JwtEncoder
