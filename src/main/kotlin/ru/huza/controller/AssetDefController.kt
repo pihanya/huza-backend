@@ -2,6 +2,7 @@ package ru.huza.controller
 
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
+import org.springframework.web.bind.annotation.CrossOrigin
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
@@ -13,6 +14,7 @@ import ru.huza.dto.AssetDefDto
 import ru.huza.model.request.AssetDefSaveModel
 import ru.huza.service.AssetDefService
 
+@CrossOrigin
 @RestController
 @RequestMapping(path = ["/asset-defs"])
 class AssetDefController {

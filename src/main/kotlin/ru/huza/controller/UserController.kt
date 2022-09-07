@@ -2,6 +2,7 @@ package ru.huza.controller
 
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
+import org.springframework.web.bind.annotation.CrossOrigin
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
@@ -14,6 +15,7 @@ import ru.huza.dto.UserDto
 import ru.huza.model.request.UserSaveModel
 import ru.huza.service.UserService
 
+@CrossOrigin
 @RestController
 @RequestMapping(path = ["/users"])
 class UserController {
