@@ -1,0 +1,15 @@
+server:
+  port: 4242
+  servlet.context-path: '/api'
+
+spring:
+  application:
+    name: huza
+
+management:
+  endpoints:
+    web:
+      base-path: '/actuator'
+      exposure.include: '*'
+
+

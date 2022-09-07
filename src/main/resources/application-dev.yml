@@ -1,0 +1,19 @@
+spring:
+
+  datasource:
+    name: 'huza-datasource'
+    driver-class-name: 'org.postgresql.Driver'
+    url: 'jdbc:postgresql://localhost:5432/huza'
+    username: 'huza'
+    password: 'huza'
+
+  jpa:
+    generate-ddl: true
+    hibernate.ddl-auto: create-drop
+
+jwt:
+  private-key: 'key.pem'
+  public-key: 'cert.pem'
+  type: 'JWT'
+  issuer: 'ITMO 160RXTX Team'
+  audience: '160RXTX Backend'
