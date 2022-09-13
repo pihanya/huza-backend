@@ -18,21 +18,21 @@ class BuildOrder : BaseEntity() {
 
     private var id: Long? = null
 
-    @Column(name = "status", nullable = false)
+    @get:Column(name = "status", nullable = false)
     var status: BuildOrderStatus? = null
 
-    @Column(name = "ordinal")
+    @get:Column(name = "ordinal")
     var ordinal: Long? = null
 
-    @Column(name = "comment")
+    @get:Column(name = "comment")
     var comment: String? = null
 
-    @JoinColumn(name = "asset_def_id", nullable = false)
-    @OneToOne(fetch = FetchType.EAGER, optional = false)
+    @get:JoinColumn(name = "asset_def_id", nullable = false)
+    @get:OneToOne(fetch = FetchType.EAGER, optional = false)
     var assetDef: AssetDef? = null
 
-    @JoinColumn(name = "created_asset_id")
-    @OneToOne(fetch = FetchType.EAGER)
+    @get:JoinColumn(name = "created_asset_id")
+    @get:OneToOne(fetch = FetchType.EAGER)
     var createdAsset: Asset? = null
 
     @Id

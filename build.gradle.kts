@@ -27,10 +27,11 @@ repositories {
 dependencies {
     runtimeOnly("org.postgresql:postgresql:42.5.0")
 //    implementation("org.springdoc:springdoc-openapi-ui:1.6.11")
-    implementation("io.micrometer:micrometer-core:1.10.0-M4")
-    implementation("io.micrometer:micrometer-observation:1.10.0-M4")
 
-    implementation("org.springframework.boot:spring-boot-starter-actuator")
+//    implementation("io.micrometer:micrometer-core:1.10.0-M4")
+//    implementation("io.micrometer:micrometer-observation:1.10.0-M4")
+//    implementation("org.springframework.boot:spring-boot-starter-actuator")
+
     implementation("org.springframework.boot:spring-boot-starter-data-rest")
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
 
@@ -40,6 +41,8 @@ dependencies {
 
     implementation("org.springframework.data:spring-data-envers")
 
+    implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-csv")
+    implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
 
     implementation("org.jetbrains.kotlin:kotlin-reflect")

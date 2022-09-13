@@ -8,5 +8,7 @@ interface AssetDefService {
 
     fun findById(id: Long): AssetDefDto
 
+    fun findByCode(code: String): AssetDefDto?
+
     fun findAll(): List<AssetDefDto>
 }

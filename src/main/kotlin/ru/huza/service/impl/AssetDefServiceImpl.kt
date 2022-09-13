@@ -21,6 +21,9 @@ class AssetDefServiceImpl : AssetDefService {
     override fun findById(id: Long): AssetDefDto =
         assetDefDao.findById(id).map(::toDto).orElseThrow()
 
+    override fun findByCode(code: String): AssetDefDto? =
+        assetDefDao.findByCode(code)?.let(::toDto)
+
     override fun findAll(): List<AssetDefDto> =
         assetDefDao.findAll().asSequence()
             .map(::toDto)

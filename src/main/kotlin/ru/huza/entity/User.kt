@@ -13,7 +13,7 @@ class User : BaseEntity() {
 
     private var id: Long? = null
 
-    @Column(name = "username", nullable = false)
+    @Column(name = "username", nullable = false, unique = true)
     var username: String? = null
 
     @Column(name = "email", nullable = false)

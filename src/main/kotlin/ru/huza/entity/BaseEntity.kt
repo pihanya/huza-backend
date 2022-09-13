@@ -16,16 +16,16 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener
 @EntityListeners(AuditingEntityListener::class)
 abstract class BaseEntity : Serializable, Persistable<Long> {
 
-    @CreatedDate
-    @Column(name = "creation_date", updatable = false)
+    @get:CreatedDate
+    @get:Column(name = "creation_date", updatable = false)
     var creationDate: LocalDateTime? = null
 
-    @LastModifiedDate
-    @Column(name = "audit_date")
+    @get:LastModifiedDate
+    @get:Column(name = "audit_date")
     var auditDate: LocalDateTime? = null
 
-    @Version
-    @Column(name = "version")
+    @get:Version
+    @get:Column(name = "version")
     var version: Long? = null
 
     @Transient

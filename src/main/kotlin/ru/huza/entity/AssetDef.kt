@@ -17,28 +17,28 @@ class AssetDef : BaseEntity() {
 
     private var id: Long? = null
 
-    @Column(name = "type", nullable = false)
+    @get:Column(name = "type", nullable = false)
     var type: String? = null
 
-    @Column(name = "code", nullable = false)
+    @get:Column(name = "code", nullable = false, unique = true)
     var code: String? = null
 
-    @Column(name = "name", nullable = false)
+    @get:Column(name = "name", nullable = false)
     var name: String? = null
 
-    @Column(name = "description")
+    @get:Column(name = "description")
     var description: String? = null
 
-    @Column(name = "img75_url")
+    @get:Column(name = "img75_url")
     var img75Url: String? = null
 
-    @Column(name = "img130_url")
+    @get:Column(name = "img130_url")
     var img130Url: String? = null
 
-    @Column(name = "img250_url")
+    @get:Column(name = "img250_url")
     var img250Url: String? = null
 
-    @Column(name = "img_orig_url")
+    @get:Column(name = "img_orig_url")
     var imgOrigUrl: String? = null
 
     @Id

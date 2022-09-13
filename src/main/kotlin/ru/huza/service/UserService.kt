@@ -11,6 +11,8 @@ interface UserService : UserDetailsService, UserDetailsPasswordService {
 
     fun removeById(id: Long): Boolean
 
+    fun findByUsernames(usernames: List<String>): List<UserDto>
+
     fun findAll(): List<UserDto>
 
     fun findById(id: Long): UserDto

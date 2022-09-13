@@ -1,12 +1,10 @@
 package ru.huza.service.impl
 
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import ru.huza.dao.AssetDao
 import ru.huza.dao.AssetDefDao
-import ru.huza.dto.AssetDefLink
 import ru.huza.dto.AssetDto
 import ru.huza.dto.toLink
 import ru.huza.entity.Asset
@@ -29,7 +27,7 @@ class AssetServiceImpl : AssetService {
             this.name = entity.name
             this.description = entity.description
             this.quantity = entity.quantity
-            this.assetDef = assetDefDao.findByIdOrNull(entity.assetDef.id)
+            this.assetDef = assetDefDao.findById(entity.assetDef.id).orElseThrow()
         }
         return assetDao.save(entityToSave).let(::toDto)
     }

@@ -35,6 +35,10 @@ class UserServiceImpl : UserService {
         return existed
     }
 
+    override fun findByUsernames(usernames: List<String>): List<UserDto> =
+        userDao.findByUsernameIn(usernames)
+            .map(::toDto)
+
     override fun findAll(): List<UserDto> =
         userDao.findAll().map(::toDto)
 
@@ -43,19 +47,21 @@ class UserServiceImpl : UserService {
 
     @Transactional
     override fun loadUserByUsername(username: String): UserDto {
-        val foundUser = userDao.findByEmail(email = username)
-            ?: throw UsernameNotFoundException("User [$username] was not found")
+        val foundUser = findByUsernameOrEmail(username)
         return toDto(foundUser)
     }
 
     @Transactional
     override fun updatePassword(user: UserDetails, newPassword: String): UserDto {
-        val username = user.username
-        val foundUser = userDao.findByEmail(email = username)
-            ?: throw UsernameNotFoundException("User [$username] was not found")
+        val foundUser = findByUsernameOrEmail(user.username)
         return userDao.save(foundUser.apply { this.password = newPassword })
             .let(::toDto)
     }
+
+    private fun findByUsernameOrEmail(username: String) =
+        userDao.findByUsername(username)
+            ?: userDao.findByEmail(email = username)
+            ?: throw UsernameNotFoundException("User [$username] was not found")
 
     private fun toDto(entity: User): UserDto =
         UserDto(
