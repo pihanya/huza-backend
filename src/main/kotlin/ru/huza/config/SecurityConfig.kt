@@ -81,6 +81,7 @@ class SecurityConfig {
                     .antMatchers(HttpMethod.OPTIONS, "**").permitAll()
                     // .antMatchers(HttpMethod.POST, "/auth/**").permitAll()
                     .antMatchers("/auth/login").permitAll()
+                    .antMatchers("/auth/info").permitAll()
                     // .antMatchers("/actuator/**").permitAll()
                     // .antMatchers("/asset-defs/**").permitAll()
                     // .antMatchers("/build-orders/**").permitAll()

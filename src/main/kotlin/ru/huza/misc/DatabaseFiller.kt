@@ -117,7 +117,7 @@ class DatabaseFiller(
                 this.username = role
                 this.email = "$role@itmo.ru"
                 this.password = BCRYPTED_PASSWORD
-                this.role = ROLES[random.nextInt(0, ROLES.size)]
+                this.role = role
             }
         }
 
