@@ -27,6 +27,10 @@ class DatabaseFiller(
     fun fillDatabase() {
         createUsers()
 
+        // "SPELL" — заклинание
+        // "RESOURCE" — ресурс
+        // "RECRUIT" — рекрут
+
         val tavern = assetDefService.findByCode("tavern") ?: assetDefService.save(
             AssetDefDto(
                 id = 1,

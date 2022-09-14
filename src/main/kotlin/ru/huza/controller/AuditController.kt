@@ -72,7 +72,8 @@ class AuditController {
                 appendLine("AND (rec.\"AUDIT_DATE\" <= ?)")
             }
             if (request.assetDefTypes != null) {
-                appendLine("AND (rec.\"ASSET_DEF_TYPE\" IN ?)")
+                val wildCards = generateSequence { "?" }.take(request.assetDefTypes.size).joinToString()
+                appendLine("AND (rec.\"ASSET_DEF_TYPE\" IN ($wildCards))")
             }
 
             appendLine("ORDER BY rec.\"ASSET_DEF_ID\", rec.\"ID\", rec.\"AUDIT_DATE\"")
@@ -82,7 +83,9 @@ class AuditController {
             request.startDate,
             request.endDate,
             request.assetDefTypes?.toTypedArray()
-        ).toTypedArray()
+        )
+            .flatMap { if (it is Array<*>) it.toList() else listOf(it) }
+            .toTypedArray()
 
         val result = jdbcTemplate.query(query, ASSET_AUDIT_RECORD_ROW_MAPPER, *args)
 
