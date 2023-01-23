@@ -75,20 +75,20 @@ class SecurityConfig {
             // .csrf { csrf -> csrf.ignoringAntMatchers("/auth/token") }
             // .cors { cors -> cors.configurationSource { src -> src. } }
             .cors { cors -> cors.configurationSource { CorsConfiguration().applyPermitDefaultValues() } }
-            .authorizeHttpRequests { authorize ->
-                authorize
-                    // .antMatchers("/").permitAll()
-                    .antMatchers(HttpMethod.OPTIONS, "**").permitAll()
-                    // .antMatchers(HttpMethod.POST, "/auth/**").permitAll()
-                    .antMatchers("/auth/login").permitAll()
-                    .antMatchers("/auth/info").permitAll()
+            //.authorizeHttpRequests { authorize ->
+            //   authorize
+            //        // .antMatchers("/").permitAll()
+            //        .antMatchers(HttpMethod.OPTIONS, "**").permitAll()
+            //        // .antMatchers(HttpMethod.POST, "/auth/**").permitAll()
+            //        .antMatchers("/auth/login").permitAll()
+            //        .antMatchers("/auth/info").permitAll()
                     // .antMatchers("/actuator/**").permitAll()
                     // .antMatchers("/asset-defs/**").permitAll()
                     // .antMatchers("/build-orders/**").permitAll()
                     // .antMatchers("/assets/**").permitAll()
                     // .antMatchers("/users/**").permitAll()
-                    .anyRequest().authenticated()
-            }
+            //        .anyRequest().authenticated()
+            //}
             .httpBasic(Customizer.withDefaults())
             .oauth2ResourceServer(OAuth2ResourceServerConfigurer<*>::jwt)
             .sessionManagement { session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS) }
