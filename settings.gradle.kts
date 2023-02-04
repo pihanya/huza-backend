@@ -1,4 +1,4 @@
-rootProject.name = "huza"
+rootProject.name = "huza-parent"
 
 enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 
