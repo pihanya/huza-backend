@@ -2,6 +2,9 @@ package ru.huza.api.controller
 
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
+import org.springframework.security.core.annotation.AuthenticationPrincipal
+import org.springframework.security.core.userdetails.UserDetails
+import org.springframework.security.oauth2.jwt.Jwt
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
@@ -23,40 +26,40 @@ class UserController {
 
     @GetMapping
     fun findAllUsers(
-        // @AuthenticationPrincipal authentication: UserDetails
+        @AuthenticationPrincipal authentication: Jwt
     ): List<UserDto> = userService.findAll()
 
     @PostMapping
     @ResponseStatus(code = HttpStatus.CREATED)
     fun createUser(
-        @RequestBody model: UserSaveModel
-        // @AuthenticationPrincipal authentication: UserDetails
+        @RequestBody model: UserSaveModel,
+//        @AuthenticationPrincipal authentication: UserDetails
     ): UserDto {
         return userService.save(fillFromSaveModel(model = model))
     }
 
     @GetMapping(path = ["/{id}"])
     fun getUserById(
-        @PathVariable("id") id: Long
-        // @AuthenticationPrincipal authentication: UserDetails
+        @PathVariable("id") id: Long,
+//        @AuthenticationPrincipal authentication: UserDetails
     ): UserDto = userService.findById(id)
 
     @PostMapping(path = ["/{id}"])
     fun updateUserById(
         @PathVariable("id") id: Long,
-        @RequestBody model: UserSaveModel
-        // @AuthenticationPrincipal authentication: UserDetails
+        @RequestBody model: UserSaveModel,
+//        @AuthenticationPrincipal authentication: UserDetails
     ): UserDto = userService.save(
         fillFromSaveModel(
             user = userService.findById(id),
-            model = model
-        )
+            model = model,
+        ),
     )
 
     @DeleteMapping(path = ["/{id}"])
     fun deleteUserById(
         @PathVariable("id") id: Long,
-        // @AuthenticationPrincipal authentication: UserDetails
+//        @AuthenticationPrincipal authentication: UserDetails,
     ) {
         userService.removeById(id)
     }

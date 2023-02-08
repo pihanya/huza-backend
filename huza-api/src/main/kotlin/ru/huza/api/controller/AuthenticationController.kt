@@ -29,7 +29,7 @@ private val logger = KotlinLogging.logger {}
 
 @RestController
 @RequestMapping(path = ["/auth"])
-class JwtAuthenticationController {
+class AuthenticationController {
 
     @set:Autowired
     lateinit var userService: UserService

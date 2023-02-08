@@ -1,9 +1,13 @@
 package ru.huza.core.service.impl
 
+import java.time.LocalDate
+import java.time.LocalDateTime
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import ru.huza.core.model.dto.AssetDto
+import ru.huza.core.model.dto.AssetPatchDto
 import ru.huza.core.model.dto.toLink
 import ru.huza.core.service.AssetService
 import ru.huza.data.dao.AssetDao
@@ -30,6 +34,25 @@ class AssetServiceImpl : AssetService {
             this.assetDef = assetDefDao.findById(entity.assetDef.id).orElseThrow()
         }
         return assetDao.save(entityToSave).let(::toDto)
+    }
+
+    @Transactional
+    override fun patchById(id: Long, dto: AssetPatchDto): AssetDto {
+        check(assetDao.existsById(id)) { "Asset with id [$id] does not exist" }
+
+        val entity = assetDao.findByIdOrNull(id)
+        check(entity != null) { "Asset with id [$id] does not exist" }
+
+        val updatedEntity = Asset(entity).apply {
+            this.code = dto.code ?: this.code
+            this.name = dto.name ?: this.name
+            this.description = dto.description ?: this.description
+            this.quantity = dto.quantity ?: this.quantity
+            this.auditDate = LocalDateTime.now()
+        }
+
+        return assetDao.save(updatedEntity)
+            .let(::toDto)
     }
 
     override fun findById(id: Long): AssetDto =

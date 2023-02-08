@@ -1,10 +1,13 @@
 package ru.huza.core.service
 
 import ru.huza.core.model.dto.AssetDto
+import ru.huza.core.model.dto.AssetPatchDto
 
 interface AssetService {
 
     fun save(entity: AssetDto): AssetDto
+
+    fun patchById(id: Long, dto: AssetPatchDto): AssetDto
 
     fun findById(id: Long): AssetDto
 

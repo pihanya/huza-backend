@@ -3,6 +3,7 @@ package ru.huza.api.controller
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PatchMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController
 import ru.huza.api.model.request.AssetSaveModel
 import ru.huza.core.model.dto.AssetDefLink
 import ru.huza.core.model.dto.AssetDto
+import ru.huza.core.model.dto.AssetPatchDto
 import ru.huza.core.model.dto.toLink
 import ru.huza.core.service.AssetDefService
 import ru.huza.core.service.AssetService
@@ -62,6 +64,12 @@ class AssetController {
             model = model
         )
     )
+
+    @PatchMapping(path = ["{id}"])
+    fun patchAssetById(
+        @PathVariable("id") id: Long,
+        @RequestBody data: AssetPatchDto,
+    ): AssetDto = assetService.patchById(id = id, dto = data)
 
     private fun fillFromSaveModel(
         asset: AssetDto? = null,

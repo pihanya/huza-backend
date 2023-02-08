@@ -9,7 +9,18 @@ spring:
 
   jpa:
     generate-ddl: true
-    hibernate.ddl-auto: update
+    hibernate.ddl-auto: create-drop
+
+#  security:
+#    oauth2:
+#      resourceserver:
+#        jwt:
+#          issuer-uri: http://localhost:4242/api/auth/realms/huza
+#          jwk-set-uri: http://localhost:4242/api/auth/realms/huza/protocol/openid-connect/certs
+
+logging:
+  level:
+    org.springframework.security: DEBUG
 
 jwt:
   private-key: 'key.pem'

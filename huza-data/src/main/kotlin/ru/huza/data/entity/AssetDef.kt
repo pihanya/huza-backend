@@ -13,7 +13,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener
 @[Entity Audited]
 @Table(name = "asset_def")
 @EntityListeners(AuditingEntityListener::class)
-class AssetDef : BaseEntity() {
+class AssetDef : BaseEntity {
 
     private var id: Long? = null
 
@@ -29,17 +29,25 @@ class AssetDef : BaseEntity() {
     @get:Column(name = "description")
     var description: String? = null
 
-    @get:Column(name = "img75_url")
-    var img75Url: String? = null
-
-    @get:Column(name = "img130_url")
-    var img130Url: String? = null
-
-    @get:Column(name = "img250_url")
-    var img250Url: String? = null
-
     @get:Column(name = "img_orig_url")
     var imgOrigUrl: String? = null
+
+    constructor()
+
+    constructor(entity: AssetDef): this() {
+        this.id = entity.id
+
+        this.type = entity.type
+        this.code = entity.code
+        this.name = entity.name
+        this.description = entity.description
+
+        this.imgOrigUrl = entity.imgOrigUrl
+
+        this.creationDate = entity.creationDate
+        this.auditDate = entity.auditDate
+        this.version = entity.version
+    }
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -13,9 +13,10 @@ import org.springframework.data.domain.AuditorAware
 import org.springframework.http.HttpMethod
 import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.authentication.AuthenticationProvider
-import org.springframework.security.authentication.ProviderManager
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider
 import org.springframework.security.config.Customizer
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
 import org.springframework.security.config.annotation.web.configurers.oauth2.server.resource.OAuth2ResourceServerConfigurer
@@ -23,6 +24,7 @@ import org.springframework.security.config.http.SessionCreationPolicy
 import org.springframework.security.core.Authentication
 import org.springframework.security.core.context.SecurityContext
 import org.springframework.security.core.context.SecurityContextHolder
+import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.security.oauth2.jwt.Jwt
 import org.springframework.security.oauth2.jwt.JwtDecoder
@@ -35,9 +37,11 @@ import org.springframework.web.cors.CorsConfiguration
 import ru.huza.api.security.JwtAuthenticationEntryPoint
 import ru.huza.core.service.UserService
 
+
 @Configuration
 @EnableWebSecurity
 @EnableConfigurationProperties(JwtProperties::class)
+@EnableMethodSecurity(prePostEnabled = true, securedEnabled = true, jsr250Enabled = true)
 class SecurityConfig {
 
     @Autowired
@@ -49,33 +53,28 @@ class SecurityConfig {
     @Autowired
     internal lateinit var jwtProperties: JwtProperties
 
-    /*@Value("\${jwt.public.key}")
-    lateinit var key: RSAPublicKey
-
-    @Value("\${jwt.private.key}")
-    lateinit var priv: RSAPrivateKey*/
+    @Bean
+    fun authenticationProvider(): AuthenticationProvider =
+        DaoAuthenticationProvider().apply {
+            setPasswordEncoder(passwordEncoder())
+            setUserDetailsService(userService)
+            setUserDetailsPasswordService(userService)
+        }
 
     @Bean
-    fun authenticationProvider(): AuthenticationProvider = DaoAuthenticationProvider().apply {
-        setPasswordEncoder(passwordEncoder())
-        setUserDetailsService(userService)
-        setUserDetailsPasswordService(userService)
-    }
-
-    @Bean
-    fun authenticationManager(): AuthenticationManager =
-        ProviderManager(listOf(authenticationProvider()))
-
-    @Bean
-    fun passwordEncoder(): BCryptPasswordEncoder = BCryptPasswordEncoder()
+    fun authenticationManager(http: HttpSecurity): AuthenticationManager =
+        http.getSharedObject(AuthenticationManagerBuilder::class.java)
+            .userDetailsService<UserDetailsService>(userService)
+            .passwordEncoder(passwordEncoder())
+            .and()
+            .build()
 
     @Bean
     fun filterChain(http: HttpSecurity): SecurityFilterChain {
+        val mutationMethods = listOf(HttpMethod.POST, HttpMethod.PUT, HttpMethod.PATCH, HttpMethod.DELETE)
+
+        // @formatter:off
         http
-            .csrf { it.disable() }
-            // .csrf { csrf -> csrf.ignoringAntMatchers("/auth/token") }
-            // .cors { cors -> cors.configurationSource { src -> src. } }
-            .cors { cors -> cors.configurationSource { CorsConfiguration().applyPermitDefaultValues() } }
             .authorizeHttpRequests { authorize ->
                 authorize
                     .requestMatchers(
@@ -84,25 +83,33 @@ class SecurityConfig {
                         // antMatcher(HttpMethod.POST, "/auth/**"),
                         antMatcher("/auth/login"),
                         antMatcher("/auth/info"),
-                        // antMatcher("/actuator/**"),
                         // antMatcher("/asset-defs/**"),
                         // antMatcher("/build-orders/**"),
                         // antMatcher("/assets/**"),
                         // antMatcher("/users/**"),
                     ).permitAll()
+                    //.requestMatchers(*mutationMethods.map { antMatcher(it, "auth/**") }.toTypedArray()).hasRole("ADMIN")
+                    //.requestMatchers(antMatcher("/actuator/**")).hasRole("ADMIN")
                     .anyRequest().authenticated()
             }
+            .csrf().disable()
             .httpBasic(Customizer.withDefaults())
-            .oauth2ResourceServer(OAuth2ResourceServerConfigurer<*>::jwt)
-            .sessionManagement { session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS) }
-            .exceptionHandling { exceptions ->
-                exceptions
+            .oauth2ResourceServer(OAuth2ResourceServerConfigurer<HttpSecurity>::jwt)
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+            .and()
+                .formLogin().disable()
+            .cors { cors -> cors.configurationSource { CorsConfiguration().applyPermitDefaultValues() } }
+                .exceptionHandling()
                     .authenticationEntryPoint(jwtAuthenticationEntryPoint)
                     .accessDeniedHandler(jwtAuthenticationEntryPoint)
-            }
+        // @formatter:on
 
         return http.build()
     }
+
+    @Bean
+    fun passwordEncoder(): BCryptPasswordEncoder =
+        BCryptPasswordEncoder()
 
     @Bean fun jwtDecoder(): JwtDecoder =
         NimbusJwtDecoder.withPublicKey(jwtProperties.publicKey).build()

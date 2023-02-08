@@ -6,8 +6,5 @@ data class AssetDefDto(
     val code: String,
     val name: String,
     val description: String? = null,
-    val img75Url: String? = null,
-    val img130Url: String? = null,
-    val img250Url: String? = null,
     val imgOrigUrl: String? = null
 )
