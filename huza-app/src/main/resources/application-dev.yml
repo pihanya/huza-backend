@@ -1,4 +1,5 @@
 huza:
+  api-url: 'http://localhost:4242/api/'
   file-storage-path: .temp/2023-02-14/tmp.2023-02-14-05-16-53/huza-files
 
 spring:

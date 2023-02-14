@@ -83,6 +83,7 @@ class SecurityConfig {
                         // antMatcher(HttpMethod.POST, "/auth/**"),
                         antMatcher("/auth/login"),
                         antMatcher("/auth/info"),
+                        antMatcher("/files/download/**")
                         // antMatcher("/asset-defs/**"),
                         // antMatcher("/build-orders/**"),
                         // antMatcher("/assets/**"),
