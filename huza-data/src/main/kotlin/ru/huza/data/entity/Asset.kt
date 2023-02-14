@@ -64,6 +64,10 @@ class Asset : BaseEntity {
 
         const val TABLE_NAME: String = "asset"
 
+        const val ID: String = "id"
+
+        const val ASSET_DEF: String = "assetDef"
+
         const val CODE: String = "code"
 
         const val NAME: String = "name"
@@ -71,7 +75,5 @@ class Asset : BaseEntity {
         const val DESCRIPTION: String = "description"
 
         const val QUANTITY: String = "quantity"
-
-        const val ASSET_DEF: String = "assetDef"
     }
 }

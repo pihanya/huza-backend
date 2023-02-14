@@ -7,6 +7,7 @@ import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
 import jakarta.persistence.SequenceGenerator
 import jakarta.persistence.Table
+import jakarta.persistence.UniqueConstraint
 
 @Entity
 @Table(name = User.TABLE_NAME)
@@ -17,7 +18,7 @@ class User : BaseEntity() {
     @Column(name = "username", nullable = false, unique = true)
     var username: String? = null
 
-    @Column(name = "email", nullable = false)
+    @Column(name = "email", nullable = false, unique = true)
     var email: String? = null
 
     @Column(name = "password", nullable = false)
@@ -39,5 +40,15 @@ class User : BaseEntity() {
     companion object {
 
         const val TABLE_NAME: String = "service_user"
+
+        const val ID: String = "id"
+
+        const val USERNAME: String = "username"
+
+        const val EMAIL: String = "email"
+
+        const val PASSWORD: String = "password"
+
+        const val ROLE: String = "role"
     }
 }

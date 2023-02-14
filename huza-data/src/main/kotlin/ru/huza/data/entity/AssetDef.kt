@@ -64,6 +64,8 @@ class AssetDef : BaseEntity {
 
         const val TABLE_NAME: String = "asset_def"
 
+        const val ID: String = "id"
+
         const val TYPE: String = "type"
 
         const val CODE: String = "code"

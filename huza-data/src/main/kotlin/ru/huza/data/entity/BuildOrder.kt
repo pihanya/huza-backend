@@ -49,5 +49,17 @@ class BuildOrder : BaseEntity() {
     companion object {
 
         const val TABLE_NAME: String = "build_order"
+
+        const val ID: String = "id"
+
+        const val ASSET_DEF: String = "assetDef"
+
+        const val CREATED_ASSET: String = "createdAsset"
+
+        const val STATUS: String = "status"
+
+        const val ORDINAL: String = "ordinal"
+
+        const val COMMENT: String = "comment"
     }
 }
