@@ -1,6 +1,6 @@
 package ru.huza.core.model.dto
 
-data class AssetDefPatchDto(
+data class AssetDefPatchModel(
     val type: String? = null,
     val code: String? = null,
     val name: String? = null,

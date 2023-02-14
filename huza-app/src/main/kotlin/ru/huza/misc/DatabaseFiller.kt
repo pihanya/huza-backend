@@ -6,6 +6,7 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
 import ru.huza.core.model.dto.AssetDefDto
+import ru.huza.core.model.dto.AssetDefSaveModel
 import ru.huza.core.model.dto.AssetDto
 import ru.huza.core.model.dto.UserDto
 import ru.huza.core.model.dto.toLink
@@ -30,12 +31,9 @@ class DatabaseFiller(
     }
 
     private fun createAssetDefs() {
-        var assetDefIdCtr = 100000L
-
         // ===== BUILDINGS =====
-        val tavern = assetDefService.findByCode("tavern") ?: assetDefService.save(
-            AssetDefDto(
-                id = assetDefIdCtr++,
+        val tavern = assetDefService.findByCode("tavern") ?: assetDefService.create(
+            AssetDefSaveModel(
                 type = AssetDefType.BUILDING.code,
                 code = "tavern",
                 name = "Таверна",
@@ -44,9 +42,8 @@ class DatabaseFiller(
             ),
         )
 
-        val villageHall = assetDefService.findByCode("village-hall") ?: assetDefService.save(
-            AssetDefDto(
-                id = assetDefIdCtr++,
+        val villageHall = assetDefService.findByCode("village-hall") ?: assetDefService.create(
+            AssetDefSaveModel(
                 type = AssetDefType.BUILDING.code,
                 code = "village-hall",
                 name = "Сельская управа",
@@ -55,9 +52,8 @@ class DatabaseFiller(
             ),
         )
 
-        val townHall = assetDefService.findByCode("town-hall") ?: assetDefService.save(
-            AssetDefDto(
-                id = assetDefIdCtr++,
+        val townHall = assetDefService.findByCode("town-hall") ?: assetDefService.create(
+            AssetDefSaveModel(
                 type = AssetDefType.BUILDING.code,
                 code = "town-hall",
                 name = "Ратуша",
@@ -66,9 +62,8 @@ class DatabaseFiller(
             ),
         )
 
-        val cityHall = assetDefService.findByCode("city-hall") ?: assetDefService.save(
-            AssetDefDto(
-                id = assetDefIdCtr++,
+        val cityHall = assetDefService.findByCode("city-hall") ?: assetDefService.create(
+            AssetDefSaveModel(
                 type = AssetDefType.BUILDING.code,
                 code = "city-hall",
                 name = "Магистрат",
@@ -77,9 +72,8 @@ class DatabaseFiller(
             ),
         )
 
-        val capitol = assetDefService.findByCode("capitol") ?: assetDefService.save(
-            AssetDefDto(
-                id = assetDefIdCtr++,
+        val capitol = assetDefService.findByCode("capitol") ?: assetDefService.create(
+            AssetDefSaveModel(
                 type = AssetDefType.BUILDING.code,
                 code = "capitol",
                 name = "Капитолий",
@@ -89,9 +83,8 @@ class DatabaseFiller(
         )
 
         // ===== SPELLS =====
-        val armageddon = assetDefService.findByCode("armageddon") ?: assetDefService.save(
-            AssetDefDto(
-                id = assetDefIdCtr++,
+        val armageddon = assetDefService.findByCode("armageddon") ?: assetDefService.create(
+            AssetDefSaveModel(
                 type = AssetDefType.SPELL.code,
                 code = "armageddon",
                 name = "Армагедон",
@@ -101,9 +94,8 @@ class DatabaseFiller(
         )
 
         // ===== RESOURCES =====
-        val gold = assetDefService.findByCode("gold") ?: assetDefService.save(
-            AssetDefDto(
-                id = assetDefIdCtr++,
+        val gold = assetDefService.findByCode("gold") ?: assetDefService.create(
+            AssetDefSaveModel(
                 type = AssetDefType.RESOURCE.code,
                 code = "gold",
                 name = "Золото",
@@ -111,9 +103,8 @@ class DatabaseFiller(
                 imgOrigUrl = "https://static.wikia.nocookie.net/heroesofmightandmagic/images/9/9b/Золото_-_H3.jpg/revision/latest?cb=20160419123135&path-prefix=ru",
             ),
         )
-        val wood = assetDefService.findByCode("wood") ?: assetDefService.save(
-            AssetDefDto(
-                id = assetDefIdCtr++,
+        val wood = assetDefService.findByCode("wood") ?: assetDefService.create(
+            AssetDefSaveModel(
                 type = AssetDefType.RESOURCE.code,
                 code = "wood",
                 name = "Древесина",
@@ -121,9 +112,8 @@ class DatabaseFiller(
                 imgOrigUrl = "https://static.wikia.nocookie.net/heroesofmightandmagic/images/e/e3/Древесина_-_H5.jpg/revision/latest?cb=20170626161819&path-prefix=ru",
             ),
         )
-        val mercury = assetDefService.findByCode("mercury") ?: assetDefService.save(
-            AssetDefDto(
-                id = assetDefIdCtr++,
+        val mercury = assetDefService.findByCode("mercury") ?: assetDefService.create(
+            AssetDefSaveModel(
                 type = AssetDefType.RESOURCE.code,
                 code = "mercury",
                 name = "Ртуть",
@@ -133,9 +123,8 @@ class DatabaseFiller(
         )
 
         // ===== RECRUITS =====
-        val archangel = assetDefService.findByCode("archangel") ?: assetDefService.save(
-            AssetDefDto(
-                id = assetDefIdCtr++,
+        val archangel = assetDefService.findByCode("archangel") ?: assetDefService.create(
+            AssetDefSaveModel(
                 type = AssetDefType.RECRUIT.code,
                 code = "archangel",
                 name = "Архангел",
