@@ -29,7 +29,7 @@ class AssetController {
     lateinit var assetDefService: AssetDefService
 
     @GetMapping
-    fun findAllAssetDefs(
+    fun findAllAssets(
        // @AuthenticationPrincipal authentication: UserDetails
     ): List<AssetDto> = assetService.findAll()
 
