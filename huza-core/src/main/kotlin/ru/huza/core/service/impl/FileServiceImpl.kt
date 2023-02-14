@@ -9,7 +9,6 @@ import jakarta.annotation.PostConstruct
 import java.io.FileOutputStream
 import java.nio.file.Path
 import java.nio.file.StandardOpenOption
-import java.nio.file.attribute.FileAttribute
 import java.nio.file.attribute.PosixFilePermissions
 import java.util.UUID
 import kotlin.io.path.createDirectories
@@ -17,7 +16,6 @@ import kotlin.io.path.exists
 import kotlin.io.path.writeBytes
 import mu.KotlinLogging
 import org.springframework.beans.factory.annotation.Value
-import org.springframework.core.io.ClassPathResource
 import org.springframework.core.io.FileSystemResource
 import org.springframework.core.io.Resource
 import org.springframework.stereotype.Service
@@ -45,49 +43,34 @@ class FileServiceImpl : FileService {
 
     override fun create(model: FileSaveModel): FileDto {
         val fileId = UUID.randomUUID().toString()
+        return createInternal(id = fileId, model = model)
+    }
 
-        val dataPath = dataPathOf(fileId)
-        val metaPath = metaDataPathOf(fileId)
+    override fun createInternal(id: String, model: FileSaveModel) : FileDto {
+        if (findByIdOrNull(id) != null) throw IllegalStateException("File with id [$id] already exists!")
+
+        val dataPath = dataPathOf(id)
+        val metaPath = metaDataPathOf(id)
         val metadata = FileMetadata(
             fileName = model.fileName,
             mediaType = model.mediaType,
         )
 
-        runCatching {
-            dataPath.writeBytes(
-                model.resource.inputStream.readBytes(),
-                StandardOpenOption.WRITE,
-                StandardOpenOption.CREATE_NEW,
-                StandardOpenOption.SYNC,
-            )
-            MAPPER.writeValue(FileOutputStream(metaPath.toFile()), metadata)
-        }.onFailure { ex ->
-            runCatching {
-                if (dataPath.exists()) {
-                    dataPath.toFile().delete()
-                }
-            }.onFailure { ex -> logger.warn(ex) { "Could not delete data file [$dataPath] on failure" } }
+        storeFile(dataPath, model.resource, metaPath, metadata)
 
-            runCatching {
-                if (metaPath.exists()) {
-                    metaPath.toFile().delete()
-                }
-            }.onFailure { ex -> logger.warn(ex) { "Could not delete meta file [$metaPath] on failure" } }
-
-            error("Could not create file: ${ex.message}")
-        }
-
-        return findById(fileId)
+        return findById(id)
     }
 
-    override fun findById(id: String): FileDto {
+    override fun findById(id: String): FileDto =
+        findByIdOrNull(id)
+            ?: throw NotFoundException("File [$id] does not exist")
+
+    override fun findByIdOrNull(id: String): FileDto? {
         val dataPath = dataPathOf(fileId = id)
         val metaPath = metaDataPathOf(fileId = id)
 
         val fileExists = metaPath.exists() && dataPath.exists()
-        if (!fileExists) {
-            throw NotFoundException("File [$id] does not exist")
-        }
+        if (!fileExists) return null
 
         val metadata = MAPPER.readValue<FileMetadata>(metaPath.toFile())
 
@@ -101,6 +84,37 @@ class FileServiceImpl : FileService {
     override fun getResource(dto: FileDto): Resource {
         val dataPath = dataPathOf(fileId = dto.id)
         return FileSystemResource(dataPath)
+    }
+
+    private fun storeFile(
+        dataPath: Path,
+        dataResource: Resource,
+        metaPath: Path,
+        metadata: FileMetadata
+    ) {
+        runCatching {
+            dataPath.writeBytes(
+                dataResource.inputStream.readBytes(),
+                StandardOpenOption.WRITE,
+                StandardOpenOption.CREATE_NEW,
+                StandardOpenOption.SYNC,
+            )
+            MAPPER.writeValue(FileOutputStream(metaPath.toFile()), metadata)
+        }.onFailure { ex ->
+            runCatching {
+                if (dataPath.exists()) {
+                    dataPath.toFile().delete()
+                }
+            }.onFailure { delEx -> logger.warn(delEx) { "Could not delete data file [$dataPath] on failure" } }
+
+            runCatching {
+                if (metaPath.exists()) {
+                    metaPath.toFile().delete()
+                }
+            }.onFailure { delEx -> logger.warn(delEx) { "Could not delete meta file [$metaPath] on failure" } }
+
+            error("Could not create file: ${ex.message}")
+        }
     }
 
     private fun dataPathOf(fileId: String): Path =
