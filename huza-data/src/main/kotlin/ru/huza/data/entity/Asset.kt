@@ -7,11 +7,12 @@ import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
 import jakarta.persistence.JoinColumn
 import jakarta.persistence.ManyToOne
+import jakarta.persistence.SequenceGenerator
 import jakarta.persistence.Table
 import org.hibernate.envers.Audited
 
 @[Entity Audited]
-@Table(name = "asset")
+@Table(name = Asset.TABLE_NAME)
 class Asset : BaseEntity {
 
     private var id: Long? = null
@@ -50,8 +51,9 @@ class Asset : BaseEntity {
     }
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = TABLE_NAME + "_gen")
+    @SequenceGenerator(name = TABLE_NAME + "_gen", sequenceName = TABLE_NAME + "_seq", allocationSize = 1)
     override fun getId(): Long? = id
 
     override fun setId(id: Long?) {
@@ -59,6 +61,8 @@ class Asset : BaseEntity {
     }
 
     companion object {
+
+        const val TABLE_NAME: String = "asset"
 
         const val CODE: String = "code"
 
