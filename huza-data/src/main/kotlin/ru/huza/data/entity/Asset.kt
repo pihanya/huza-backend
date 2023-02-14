@@ -9,15 +9,24 @@ import jakarta.persistence.JoinColumn
 import jakarta.persistence.ManyToOne
 import jakarta.persistence.SequenceGenerator
 import jakarta.persistence.Table
+import jakarta.persistence.UniqueConstraint
 import org.hibernate.envers.Audited
 
 @[Entity Audited]
-@Table(name = Asset.TABLE_NAME)
+@Table(
+    name = Asset.TABLE_NAME,
+    uniqueConstraints = [
+        UniqueConstraint(
+            name = "idx_${Asset.TABLE_NAME}__${Asset.CODE}",
+            columnNames = [Asset.CODE],
+        ),
+    ],
+)
 class Asset : BaseEntity {
 
     private var id: Long? = null
 
-    @get:Column(name = "code")
+    @get:Column(name = "code", unique = true)
     var code: String? = null
 
     @get:Column(name = "name")

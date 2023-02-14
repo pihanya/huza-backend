@@ -8,11 +8,20 @@ import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
 import jakarta.persistence.SequenceGenerator
 import jakarta.persistence.Table
+import jakarta.persistence.UniqueConstraint
 import org.hibernate.envers.Audited
 import org.springframework.data.jpa.domain.support.AuditingEntityListener
 
 @[Entity Audited]
-@Table(name = AssetDef.TABLE_NAME)
+@Table(
+    name = AssetDef.TABLE_NAME,
+    uniqueConstraints = [
+        UniqueConstraint(
+            name = "idx_${AssetDef.TABLE_NAME}__${AssetDef.CODE}",
+            columnNames = [AssetDef.CODE],
+        ),
+    ],
+)
 @EntityListeners(AuditingEntityListener::class)
 class AssetDef : BaseEntity {
 

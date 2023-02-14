@@ -10,7 +10,19 @@ import jakarta.persistence.Table
 import jakarta.persistence.UniqueConstraint
 
 @Entity
-@Table(name = User.TABLE_NAME)
+@Table(
+    name = User.TABLE_NAME,
+    uniqueConstraints = [
+        UniqueConstraint(
+            name = "idx_${User.TABLE_NAME}__${User.USERNAME}",
+            columnNames = [User.USERNAME],
+        ),
+        UniqueConstraint(
+            name = "idx_${User.TABLE_NAME}__${User.EMAIL}",
+            columnNames = [User.EMAIL],
+        ),
+    ],
+)
 class User : BaseEntity() {
 
     private var id: Long? = null
