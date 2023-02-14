@@ -18,6 +18,9 @@ public class AdminHomePage {
     @FindBy(xpath = "//div//*[contains(text(),'Активы замка')]")
     private WebElement resourcesCard;
 
+    @FindBy(xpath = "//div//*[contains(text(),'Определения активов')]")
+    private WebElement assetDefCard;
+
     public AdminHomePage(WebDriver driver) {
         this.driver = driver;
     }

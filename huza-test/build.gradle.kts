@@ -1,24 +1,15 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import org.springframework.boot.gradle.plugin.SpringBootPlugin
 
-repositories {
-    mavenLocal()
-    mavenCentral()
-    gradlePluginPortal()
-}
-
 @Suppress("DSL_SCOPE_VIOLATION") // TODO: Delete after https://github.com/gradle/gradle/issues/22797
 plugins {
     id("ru.huza.base")
-    id("org.springframework.boot") version "3.0.1"
-    id("io.spring.dependency-management") version "1.0.13.RELEASE"
+    id("org.springframework.boot")
+    id("io.spring.dependency-management")
     alias(libs.plugins.kotlin.spring)
     alias(libs.plugins.kotlin.jpa)
 }
 
-
-
-apply<SpringBootPlugin>()
 
 dependencies {
     runtimeOnly("org.postgresql:postgresql:42.5.0")
