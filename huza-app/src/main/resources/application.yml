@@ -2,6 +2,9 @@ server:
   port: 4242
   servlet.context-path: '/api'
 
+huza:
+  owner-role-name: owner
+
 spring:
   application:
     name: huza

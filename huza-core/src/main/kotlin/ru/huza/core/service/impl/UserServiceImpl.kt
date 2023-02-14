@@ -1,6 +1,8 @@
 package ru.huza.core.service.impl
 
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.beans.factory.annotation.Value
+import org.springframework.data.repository.findByIdOrNull
 import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.security.core.userdetails.UsernameNotFoundException
 import org.springframework.stereotype.Service
@@ -16,6 +18,9 @@ class UserServiceImpl : UserService {
     @set:Autowired
     lateinit var userDao: UserDao
 
+    @Value("\${huza.owner-role-name}")
+    lateinit var ownerRoleName: String
+
     @Transactional
     override fun save(entity: UserDto): UserDto =
         userDao.save(
@@ -30,9 +35,15 @@ class UserServiceImpl : UserService {
 
     @Transactional
     override fun removeById(id: Long): Boolean {
-        val existed = userDao.existsById(id)
+        val existingUser = userDao.findByIdOrNull(id) ?: return false
+
+        val owners = userDao.findAll().filter { it.role == ownerRoleName }
+        if (existingUser.role == ownerRoleName && owners.count() <= 1) {
+            error("Нельзя удалить единственного владельца замка!")
+        }
+
         userDao.deleteById(id)
-        return existed
+        return true
     }
 
     override fun findByUsernames(usernames: List<String>): List<UserDto> =
