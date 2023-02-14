@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component
 import ru.huza.core.model.dto.AssetDefDto
 import ru.huza.core.model.dto.AssetDefSaveModel
 import ru.huza.core.model.dto.AssetDto
+import ru.huza.core.model.dto.AssetSaveModel
 import ru.huza.core.model.dto.UserDto
 import ru.huza.core.model.dto.toLink
 import ru.huza.core.service.AssetDefService
@@ -133,48 +134,48 @@ class DatabaseFiller(
             ),
         )
 
-        assetService.save(
-            AssetDto(
-                assetDef = tavern.toLink(),
+        assetService.create(
+            AssetSaveModel(
+                assetDefId = tavern.id!!,
                 quantity = 1,
             ),
         )
-        assetService.save(
-            AssetDto(
-                assetDef = villageHall.toLink(),
-                quantity = 1,
-            ),
-        )
-
-        assetService.save(
-            AssetDto(
-                assetDef = armageddon.toLink(),
+        assetService.create(
+            AssetSaveModel(
+                assetDefId = villageHall.id!!,
                 quantity = 1,
             ),
         )
 
-        assetService.save(
-            AssetDto(
-                assetDef = gold.toLink(),
+        assetService.create(
+            AssetSaveModel(
+                assetDefId = armageddon.id!!,
+                quantity = 1,
+            ),
+        )
+
+        assetService.create(
+            AssetSaveModel(
+                assetDefId = gold.id!!,
                 quantity = 1488,
             ),
         )
-        assetService.save(
-            AssetDto(
-                assetDef = wood.toLink(),
+        assetService.create(
+            AssetSaveModel(
+                assetDefId = wood.id!!,
                 quantity = 32,
             ),
         )
-        assetService.save(
-            AssetDto(
-                assetDef = mercury.toLink(),
+        assetService.create(
+            AssetSaveModel(
+                assetDefId = mercury.id!!,
                 quantity = 3,
             ),
         )
 
-        assetService.save(
-            AssetDto(
-                assetDef = archangel.toLink(),
+        assetService.create(
+            AssetSaveModel(
+                assetDefId = archangel.id!!,
                 quantity = 10,
             ),
         )

@@ -33,8 +33,8 @@ class AssetDefServiceImpl : AssetDefService {
         val existingEntity = assetDefDao.findByIdOrNull(id)
         check(existingEntity != null) { "Asset Def with id [$id] does not exist" }
 
-        val updatedAssetDef = fillFromSaveModel(existingEntity = existingEntity, saveModel = model, now = now)
-        return assetDefDao.save(updatedAssetDef).let(::toDto)
+        val updatedEntity = fillFromSaveModel(existingEntity = existingEntity, saveModel = model, now = now)
+        return assetDefDao.save(updatedEntity).let(::toDto)
     }
 
     @Transactional
