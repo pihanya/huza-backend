@@ -11,6 +11,8 @@ import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import ru.huza.core.exception.NotFoundException
 import ru.huza.core.model.dto.UserDto
+import ru.huza.core.model.dto.UserPatchModel
+import ru.huza.core.model.dto.UserSaveModel
 import ru.huza.core.service.UserService
 import ru.huza.data.dao.UserDao
 import ru.huza.data.entity.User
@@ -25,18 +27,36 @@ class UserServiceImpl : UserService {
 
     @Value("\${huza.owner-role-name}")
     lateinit var ownerRoleName: String
+    
+    @Transactional
+    override fun create(model: UserSaveModel): UserDto {
+        val now = LocalDateTime.now()
+
+        val entityToSave = fillFromSaveModel(existingEntity = null, saveModel = model, now = now)
+        return userDao.save(entityToSave).let(::toDto)
+    }
 
     @Transactional
-    override fun save(entity: UserDto): UserDto =
-        userDao.save(
-            User().apply {
-                this.id = entity.id
-                this.email = entity.email
-                this.username = entity.username
-                this.password = entity.password
-                this.role = entity.role
-            }
-        ).let(::toDto)
+    override fun updateById(id: Long, model: UserSaveModel): UserDto {
+        val now = LocalDateTime.now()
+
+        val existingEntity = userDao.findByIdOrNull(id)
+        check(existingEntity != null) { "Asset with id [$id] does not exist" }
+
+        val updatedEntity = fillFromSaveModel(existingEntity = existingEntity, saveModel = model, now = now)
+        return userDao.save(updatedEntity).let(::toDto)
+    }
+
+    @Transactional
+    override fun patchById(id: Long, model: UserPatchModel): UserDto {
+        val now = LocalDateTime.now()
+
+        val existingEntity = userDao.findByIdOrNull(id)
+        check(existingEntity != null) { "Asset with id [$id] does not exist" }
+
+        val updatedEntity = fillFromPatchModel(existingEntity = existingEntity, patchModel = model, now = now)
+        return userDao.save(updatedEntity).let(::toDto)
+    }
 
     @Transactional
     override fun removeById(id: Long): Boolean {
@@ -102,4 +122,35 @@ class UserServiceImpl : UserService {
             role = entity.role!!,
             authDate = entity.authDate,
         )
+
+    private fun fillFromSaveModel(
+        existingEntity: User? = null,
+        saveModel: UserSaveModel,
+        now: LocalDateTime,
+    ): User =
+        User().apply {
+            this.id = existingEntity?.id
+            this.username = saveModel.username ?: existingEntity?.username
+            this.email = saveModel.email ?: existingEntity?.email ?: error("email was null")
+            this.password = saveModel.password ?: existingEntity?.password ?: error("password was null")
+            this.role = saveModel.role ?: existingEntity?.role ?: error("role was null")
+            this.authDate = existingEntity?.authDate
+            this.creationDate = existingEntity?.creationDate ?: now
+            this.auditDate = now
+            existingEntity?.version?.let { this.version = it }
+        }
+
+    private fun fillFromPatchModel(
+        existingEntity: User,
+        patchModel: UserPatchModel,
+        now: LocalDateTime,
+    ): User =
+        User(existingEntity).apply {
+            this.email = patchModel.email ?: existingEntity.email
+            this.username = patchModel.username ?: existingEntity.username
+            this.password = patchModel.password ?: existingEntity.password
+            this.role = patchModel.role ?: existingEntity.role
+            this.auditDate = now
+            existingEntity.version?.let { this.version = it }
+        }
 }

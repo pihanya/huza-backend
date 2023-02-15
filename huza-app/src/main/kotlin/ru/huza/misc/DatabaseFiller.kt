@@ -12,6 +12,7 @@ import ru.huza.core.model.dto.AssetDefSaveModel
 import ru.huza.core.model.dto.AssetSaveModel
 import ru.huza.core.model.dto.FileSaveModel
 import ru.huza.core.model.dto.UserDto
+import ru.huza.core.model.dto.UserSaveModel
 import ru.huza.core.service.AssetDefService
 import ru.huza.core.service.AssetService
 import ru.huza.core.service.FileService
@@ -289,14 +290,14 @@ class DatabaseFiller(
         return usersToCreate.asSequence()
             .filter { it.username !in existingUsernames }
             .map {
-                UserDto().apply {
-                    this.email = it.email
-                    setUsername(it.username!!)
-                    setPassword(it.password!!)
-                    this.role = it.role
-                }
+                UserSaveModel(
+                    email = it.email,
+                    username = it.username,
+                    password = it.password,
+                    role = it.role,
+                )
             }
-            .map(userService::save)
+            .map(userService::create)
             .onEach { LOGGER.info(it.toString()) }
             .toList()
     }

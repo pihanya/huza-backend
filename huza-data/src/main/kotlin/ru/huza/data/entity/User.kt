@@ -24,7 +24,7 @@ import java.time.LocalDateTime
         ),
     ],
 )
-class User : BaseEntity() {
+class User : BaseEntity {
 
     private var id: Long? = null
 
@@ -42,6 +42,22 @@ class User : BaseEntity() {
 
     @get:Column(name = "auth_date")
     var authDate: LocalDateTime? = null
+
+    constructor()
+
+    constructor(entity: User): this() {
+        this.id = entity.id
+
+        this.username = entity.username
+        this.email = entity.email
+        this.password = entity.password
+        this.role = entity.role
+        this.authDate = entity.authDate
+
+        this.creationDate = entity.creationDate
+        this.auditDate = entity.auditDate
+        this.version = entity.version
+    }
 
     @Id
     @Column(name = "id", nullable = false)

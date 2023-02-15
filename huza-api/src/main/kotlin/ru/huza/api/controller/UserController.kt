@@ -3,18 +3,20 @@ package ru.huza.api.controller
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.security.core.annotation.AuthenticationPrincipal
-import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.security.oauth2.jwt.Jwt
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PatchMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.ResponseStatus
 import org.springframework.web.bind.annotation.RestController
-import ru.huza.api.model.request.UserSaveModel
+import ru.huza.core.model.dto.AssetDto
 import ru.huza.core.model.dto.UserDto
+import ru.huza.core.model.dto.UserPatchModel
+import ru.huza.core.model.dto.UserSaveModel
 import ru.huza.core.service.UserService
 
 @RestController
@@ -35,7 +37,7 @@ class UserController {
         @RequestBody model: UserSaveModel,
 //        @AuthenticationPrincipal authentication: UserDetails
     ): UserDto {
-        return userService.save(fillFromSaveModel(model = model))
+        return userService.create(model = model)
     }
 
     @GetMapping(path = ["/{id}"])
@@ -49,12 +51,13 @@ class UserController {
         @PathVariable("id") id: Long,
         @RequestBody model: UserSaveModel,
 //        @AuthenticationPrincipal authentication: UserDetails
-    ): UserDto = userService.save(
-        fillFromSaveModel(
-            user = userService.findById(id),
-            model = model,
-        ),
-    )
+    ): UserDto = userService.updateById(id, model)
+
+    @PatchMapping(path = ["{id}"])
+    fun patchUserById(
+        @PathVariable("id") id: Long,
+        @RequestBody model: UserPatchModel,
+    ): UserDto = userService.patchById(id = id, model = model)
 
     @DeleteMapping(path = ["/{id}"])
     fun deleteUserById(
@@ -62,16 +65,5 @@ class UserController {
 //        @AuthenticationPrincipal authentication: UserDetails,
     ) {
         userService.removeById(id)
-    }
-
-    private fun fillFromSaveModel(
-        user: UserDto? = null,
-        model: UserSaveModel
-    ): UserDto = UserDto().apply {
-        this.id = user?.id
-        this.email = model.email ?: user?.email ?: error("email was null")
-        this.role = model.role ?: user?.role ?: error("role was null")
-        setUsername(user?.username ?: this.email!!)
-        setPassword(model.password ?: user?.password ?: error("password was null"))
     }
 }

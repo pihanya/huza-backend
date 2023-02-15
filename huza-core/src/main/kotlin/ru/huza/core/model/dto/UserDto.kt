@@ -9,7 +9,6 @@ import org.springframework.security.core.userdetails.UserDetails
 
 class UserDto : UserDetails, CredentialsContainer {
 
-    @get:JsonIgnore
     var id: Long? = null
 
     var email: String? = null

@@ -1,6 +1,6 @@
-package ru.huza.api.model.request
+package ru.huza.core.model.dto
 
-data class UserSaveModel(
+data class UserPatchModel(
     val email: String? = null,
     val username: String? = null,
     val password: String? = null,
