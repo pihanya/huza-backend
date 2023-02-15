@@ -39,7 +39,7 @@ class AssetDef : BaseEntity {
     @get:Column(name = "description")
     var description: String? = null
 
-    @get:Column(name = "img_orig_url")
+    @get:Column(name = "img_orig_url", nullable = false)
     var imgOrigUrl: String? = null
 
     @get:Column(name = "cost")
