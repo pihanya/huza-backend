@@ -22,8 +22,8 @@ public abstract class SeleniumTestBase {
     @Autowired
     protected WebDriver driver;
 
-    @Autowired
-    AuthenticationController jwtAuthenticationController;
+    //@Autowired
+    //AuthenticationController jwtAuthenticationController;
     @LocalServerPort
     private final static int port = 3000;
 
