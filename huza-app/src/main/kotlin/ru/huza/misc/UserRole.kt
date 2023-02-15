@@ -12,5 +12,5 @@ enum class UserRole(val code: String) {
 
     WIZARD("wizard"),
 
-    PAYMASTER("PAYMASTER"),
+    PAYMASTER("paymaster"),
 }
