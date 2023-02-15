@@ -1,5 +1,7 @@
 package ru.huza.core.service.impl
 
+import java.time.LocalDateTime
+import mu.KotlinLogging
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.data.repository.findByIdOrNull
@@ -7,10 +9,13 @@ import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.security.core.userdetails.UsernameNotFoundException
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import ru.huza.core.exception.NotFoundException
 import ru.huza.core.model.dto.UserDto
 import ru.huza.core.service.UserService
 import ru.huza.data.dao.UserDao
 import ru.huza.data.entity.User
+
+private val logger = KotlinLogging.logger {}
 
 @Service
 class UserServiceImpl : UserService {
@@ -53,8 +58,22 @@ class UserServiceImpl : UserService {
     override fun findAll(): List<UserDto> =
         userDao.findAll().map(::toDto)
 
-    override fun findById(id: Long): UserDto =
-        userDao.findById(id).map(::toDto).orElseThrow()
+    override fun findById(id: Long): UserDto {
+        val existingEntity = userDao.findByIdOrNull(id)
+            ?: throw NotFoundException("Service User with id [$id] does not exist")
+        return existingEntity.let(::toDto)
+    }
+
+    override fun trackAuth(id: Long) {
+        val now = LocalDateTime.now()
+
+        val existingEntity = userDao.findByIdOrNull(id)
+            ?.apply { this.authDate = now }
+            ?: throw NotFoundException("Service User with id [$id] does not exist")
+
+        userDao.save(existingEntity)
+        logger.debug { "Tracked authentication of user [$id] at [$now]" }
+    }
 
     @Transactional
     override fun loadUserByUsername(username: String): UserDto {
@@ -76,10 +95,11 @@ class UserServiceImpl : UserService {
 
     private fun toDto(entity: User): UserDto =
         UserDto(
-            entity.id!!,
-            entity.email!!,
-            entity.username!!,
-            entity.password!!,
-            entity.role!!
+            id = entity.id!!,
+            email = entity.email!!,
+            username = entity.username!!,
+            password = entity.password!!,
+            role = entity.role!!,
+            authDate = entity.authDate,
         )
 }

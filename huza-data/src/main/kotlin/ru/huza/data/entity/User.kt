@@ -8,6 +8,7 @@ import jakarta.persistence.Id
 import jakarta.persistence.SequenceGenerator
 import jakarta.persistence.Table
 import jakarta.persistence.UniqueConstraint
+import java.time.LocalDateTime
 
 @Entity
 @Table(
@@ -38,6 +39,9 @@ class User : BaseEntity() {
 
     @Column(name = "role", nullable = false)
     var role: String? = null
+
+    @get:Column(name = "auth_date")
+    var authDate: LocalDateTime? = null
 
     @Id
     @Column(name = "id", nullable = false)

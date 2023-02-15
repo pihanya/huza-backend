@@ -17,6 +17,8 @@ interface UserService : UserDetailsService, UserDetailsPasswordService {
 
     fun findById(id: Long): UserDto
 
+    fun trackAuth(id: Long)
+
     override fun loadUserByUsername(username: String): UserDto
 
     override fun updatePassword(user: UserDetails, newPassword: String): UserDto

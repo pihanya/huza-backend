@@ -117,6 +117,8 @@ class AuthenticationController {
             .build()
         val token = encoder.encode(JwtEncoderParameters.from(claims)).tokenValue
 
+        userService.trackAuth(serviceUser.id!!)
+
         return ResponseEntity.ok(AuthResponse(token))
     }
 
