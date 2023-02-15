@@ -74,6 +74,9 @@ class AssetDefServiceImpl : AssetDefService {
             imgOrigUrl = entity.imgOrigUrl!!,
             description = entity.description,
             cost = entity.cost?.let(::fromEntityCost).orEmpty(),
+            fraction = entity.fraction,
+            level = entity.level,
+            magicSchool = entity.magicSchool,
             creationDate = entity.creationDate ?: error("creationDate was null for entity [${entity.id}]"),
             auditDate = entity.auditDate ?: error("auditDate was null for entity [${entity.id}]"),
         )
@@ -91,6 +94,9 @@ class AssetDefServiceImpl : AssetDefService {
             this.description = saveModel.description ?: existingEntity?.description
             this.imgOrigUrl = saveModel.imgOrigUrl ?: existingEntity?.imgOrigUrl
             this.cost = toEntityCost(saveModel.cost) ?: existingEntity?.cost
+            this.fraction = saveModel.fraction ?: existingEntity?.fraction
+            this.level = saveModel.level ?: existingEntity?.level
+            this.magicSchool = saveModel.magicSchool ?: existingEntity?.magicSchool
             this.creationDate = existingEntity?.creationDate ?: now
             this.auditDate = now
             existingEntity?.version?.let { this.version = it }
@@ -119,6 +125,15 @@ class AssetDefServiceImpl : AssetDefService {
             }
             if (patchModel.cost != null) {
                 this.cost = toEntityCost(patchModel.cost)
+            }
+            if (patchModel.fraction != null) {
+                this.fraction = patchModel.fraction
+            }
+            if (patchModel.level != null) {
+                this.level = patchModel.level
+            }
+            if (patchModel.magicSchool != null) {
+                this.magicSchool = patchModel.magicSchool
             }
             this.auditDate = now
             existingEntity.version?.let { this.version = it }
