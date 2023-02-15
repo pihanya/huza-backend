@@ -42,6 +42,9 @@ class AssetDef : BaseEntity {
     @get:Column(name = "img_orig_url")
     var imgOrigUrl: String? = null
 
+    @get:Column(name = "cost")
+    var cost: String? = null
+
     constructor()
 
     constructor(entity: AssetDef): this() {
@@ -53,6 +56,7 @@ class AssetDef : BaseEntity {
         this.description = entity.description
 
         this.imgOrigUrl = entity.imgOrigUrl
+        this.cost = entity.cost
 
         this.creationDate = entity.creationDate
         this.auditDate = entity.auditDate

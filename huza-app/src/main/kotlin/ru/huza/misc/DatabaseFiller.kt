@@ -48,6 +48,11 @@ class DatabaseFiller(
                 name = "Таверна",
                 description = "Позволяет нанимать героев, а также повышает боевой дух войск гарнизона на 1 ед",
                 imgOrigUrl = "https://static.wikia.nocookie.net/heroesofmightandmagic/images/a/ad/Таверна_-_ЗамокH3.png/revision/latest?cb=20170119074127&path-prefix=ru",
+                cost = listOf(
+                    AssetDefSaveModel.CostElement(ResourceCodes.gold, 100),
+                    AssetDefSaveModel.CostElement(ResourceCodes.wood, 3),
+                    AssetDefSaveModel.CostElement(ResourceCodes.ore, 2),
+                ),
             ),
         )
 
@@ -58,6 +63,7 @@ class DatabaseFiller(
                 name = "Сельская управа",
                 description = "Изначально присутствует в каждом городе, ежедневно приносит в казну 500 золотых",
                 imgOrigUrl = "https://static.wikia.nocookie.net/heroesofmightandmagic/images/a/a1/Сельская_управа_-_ЗамокH3.png/revision/latest?cb=20170119074045&path-prefix=ru",
+                cost = emptyList(),
             ),
         )
 
@@ -68,6 +74,7 @@ class DatabaseFiller(
                 name = "Ратуша",
                 description = "Ежедневно приносит в казну 1000 золотых",
                 imgOrigUrl = "https://static.wikia.nocookie.net/heroesofmightandmagic/images/7/7a/Ратуша_-_ЗамокH3.png/revision/latest?cb=20170119074056&path-prefix=ru",
+                cost = emptyList(),
             ),
         )
 
@@ -78,6 +85,7 @@ class DatabaseFiller(
                 name = "Магистрат",
                 description = "Ежедневно приносит в казну 2000 золотых",
                 imgOrigUrl = "https://static.wikia.nocookie.net/heroesofmightandmagic/images/e/e4/Магистрат_-_ЗамокH3.png/revision/latest?cb=20170119074106&path-prefix=ru",
+                cost = emptyList(),
             ),
         )
 
@@ -88,6 +96,7 @@ class DatabaseFiller(
                 name = "Капитолий",
                 description = "Ежедневно приносит в казну 4000 золотых",
                 imgOrigUrl = "https://static.wikia.nocookie.net/heroesofmightandmagic/images/1/17/Капитолий_-_ЗамокH3.png/revision/latest?cb=20170119074117&path-prefix=ru",
+                cost = emptyList(),
             ),
         )
 

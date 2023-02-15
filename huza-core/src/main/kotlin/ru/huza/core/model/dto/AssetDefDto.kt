@@ -1,5 +1,6 @@
 package ru.huza.core.model.dto
 
+import com.fasterxml.jackson.annotation.JsonProperty
 import java.time.LocalDateTime
 
 data class AssetDefDto(
@@ -11,4 +12,12 @@ data class AssetDefDto(
     val imgOrigUrl: String? = null,
     val creationDate: LocalDateTime,
     val auditDate: LocalDateTime,
-)
+    val cost: List<CostElement>,
+) {
+
+    data class CostElement(
+        @JsonProperty("id") val assetDefId: Long,
+        @JsonProperty("name") val assetDefCode: String,
+        @JsonProperty("count") val count: Int,
+    )
+}

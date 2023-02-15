@@ -1,5 +1,10 @@
 package ru.huza.core.service.impl
 
+import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.databind.json.JsonMapper
+import com.fasterxml.jackson.module.kotlin.KotlinFeature
+import com.fasterxml.jackson.module.kotlin.KotlinModule
+import com.fasterxml.jackson.module.kotlin.readValue
 import java.time.LocalDateTime
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.repository.findByIdOrNull
@@ -60,16 +65,18 @@ class AssetDefServiceImpl : AssetDefService {
             .sortedBy(AssetDefDto::code)
             .toList()
 
-    private fun toDto(entity: AssetDef): AssetDefDto = AssetDefDto(
-        id = entity.id,
-        type = entity.type!!,
-        code = entity.code!!,
-        name = entity.name!!,
-        description = entity.description,
-        imgOrigUrl = entity.imgOrigUrl,
-        creationDate = entity.creationDate ?: error("creationDate was null for entity [${entity.id}]"),
-        auditDate = entity.auditDate ?: error("auditDate was null for entity [${entity.id}]"),
-    )
+    private fun toDto(entity: AssetDef): AssetDefDto =
+        AssetDefDto(
+            id = entity.id,
+            type = entity.type!!,
+            code = entity.code!!,
+            name = entity.name!!,
+            description = entity.description,
+            imgOrigUrl = entity.imgOrigUrl,
+            cost = entity.cost?.let(::fromEntityCost).orEmpty(),
+            creationDate = entity.creationDate ?: error("creationDate was null for entity [${entity.id}]"),
+            auditDate = entity.auditDate ?: error("auditDate was null for entity [${entity.id}]"),
+        )
 
     private fun fillFromSaveModel(
         existingEntity: AssetDef? = null,
@@ -83,6 +90,7 @@ class AssetDefServiceImpl : AssetDefService {
             this.name = saveModel.name ?: existingEntity?.name ?: error("name was null")
             this.description = saveModel.description ?: existingEntity?.description
             this.imgOrigUrl = saveModel.imgOrigUrl ?: existingEntity?.imgOrigUrl
+            this.cost = toEntityCost(saveModel.cost) ?: existingEntity?.cost
             this.creationDate = existingEntity?.creationDate ?: now
             this.auditDate = now
             existingEntity?.version?.let { this.version = it }
@@ -94,12 +102,56 @@ class AssetDefServiceImpl : AssetDefService {
         now: LocalDateTime,
     ): AssetDef =
         AssetDef(existingEntity).apply {
-            this.type = patchModel.type ?: this.type
-            this.code = patchModel.code ?: this.code
-            this.name = patchModel.name ?: this.name
-            this.description = patchModel.description ?: this.description
-            this.imgOrigUrl = patchModel.imgOrigUrl ?: this.imgOrigUrl
+            if (patchModel.type != null) {
+                this.type = patchModel.type
+            }
+            if (patchModel.code != null) {
+                this.code = patchModel.code
+            }
+            if (patchModel.name != null) {
+                this.name = patchModel.name
+            }
+            if (patchModel.description != null) {
+                this.description = patchModel.description
+            }
+            if (patchModel.imgOrigUrl != null) {
+                this.imgOrigUrl = patchModel.imgOrigUrl
+            }
+            if (patchModel.cost != null) {
+                this.cost = toEntityCost(patchModel.cost)
+            }
             this.auditDate = now
             existingEntity.version?.let { this.version = it }
         }
+
+    private fun toEntityCost(elements: List<AssetDefSaveModel.CostElement>): String {
+        val assetDefsByCode = assetDefDao
+            .findByCodeIn(elements.map { it.assetDefCode }.toSet())
+            .associateBy(AssetDef::code)
+            .let { it as Map<String, AssetDef> }
+
+        val dtoElements = elements.map {
+            val assetDefId = assetDefsByCode.getValue(it.assetDefCode).id!!
+            AssetDefDto.CostElement(
+                assetDefId = assetDefId,
+                assetDefCode = it.assetDefCode,
+                count = it.count,
+            )
+        }
+
+        return MAPPER.writeValueAsString(dtoElements)
+    }
+
+    private fun fromEntityCost(cost: String): List<AssetDefDto.CostElement> = MAPPER.readValue(cost)
+
+    companion object {
+
+        private val MAPPER: ObjectMapper = JsonMapper.builder()
+            .addModule(
+                KotlinModule.Builder()
+                    .configure(KotlinFeature.StrictNullChecks, true)
+                    .build(),
+            )
+            .build()
+    }
 }
