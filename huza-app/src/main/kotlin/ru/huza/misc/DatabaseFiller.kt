@@ -304,6 +304,7 @@ class DatabaseFiller(
                     username = it.username,
                     password = it.password,
                     role = it.role,
+                    avatarUrl = "https://www.gravatar.com/avatar/1ca58d0a4a10ea07fabd4e4d32968982?s=256&d=identicon&r=PG",
                 )
             }
             .map(userService::create)

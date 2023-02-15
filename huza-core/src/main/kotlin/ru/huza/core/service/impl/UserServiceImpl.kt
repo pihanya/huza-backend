@@ -120,6 +120,7 @@ class UserServiceImpl : UserService {
             username = entity.username!!,
             password = entity.password!!,
             role = entity.role!!,
+            avatarUrl = entity.avatarUrl!!,
             authDate = entity.authDate,
         )
 
@@ -134,6 +135,7 @@ class UserServiceImpl : UserService {
             this.email = saveModel.email ?: existingEntity?.email ?: error("email was null")
             this.password = saveModel.password ?: existingEntity?.password ?: error("password was null")
             this.role = saveModel.role ?: existingEntity?.role ?: error("role was null")
+            this.avatarUrl = saveModel.avatarUrl ?: existingEntity?.avatarUrl ?: error("avatarUrl was null")
             this.authDate = existingEntity?.authDate
             this.creationDate = existingEntity?.creationDate ?: now
             this.auditDate = now
@@ -150,6 +152,7 @@ class UserServiceImpl : UserService {
             this.username = patchModel.username ?: existingEntity.username
             this.password = patchModel.password ?: existingEntity.password
             this.role = patchModel.role ?: existingEntity.role
+            this.avatarUrl = patchModel.avatarUrl ?: existingEntity.avatarUrl
             this.auditDate = now
             existingEntity.version?.let { this.version = it }
         }
