@@ -1,22 +1,17 @@
 package ru.huza.core.model.dto
 
 import com.fasterxml.jackson.annotation.JsonProperty
-import java.time.LocalDateTime
 
-data class AssetDefDto(
-    val id: Long? = null,
-    val type: String,
-    val code: String,
-    val name: String,
+data class AssetDefSaveModel(
+    val type: String? = null,
+    val code: String? = null,
+    val name: String? = null,
     val description: String? = null,
     val imgOrigUrl: String? = null,
-    val creationDate: LocalDateTime,
-    val auditDate: LocalDateTime,
-    val cost: List<CostElement>,
+    val cost: List<CostElement> = emptyList(),
 ) {
 
     data class CostElement(
-        @JsonProperty("id") val assetDefId: Long,
         @JsonProperty("name") val assetDefCode: String,
         @JsonProperty("count") val count: Int,
     )

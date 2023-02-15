@@ -1,15 +1,20 @@
 package ru.huza.core.service.impl
 
+import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.databind.json.JsonMapper
+import com.fasterxml.jackson.module.kotlin.KotlinFeature
+import com.fasterxml.jackson.module.kotlin.KotlinModule
+import com.fasterxml.jackson.module.kotlin.readValue
 import java.time.LocalDateTime
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import ru.huza.core.model.dto.AssetDefDto
-import ru.huza.core.model.dto.AssetDefPatchDto
+import ru.huza.core.model.dto.AssetDefPatchModel
+import ru.huza.core.model.dto.AssetDefSaveModel
 import ru.huza.core.service.AssetDefService
 import ru.huza.data.dao.AssetDefDao
-import ru.huza.data.entity.Asset
 import ru.huza.data.entity.AssetDef
 
 @Service
@@ -19,27 +24,33 @@ class AssetDefServiceImpl : AssetDefService {
     lateinit var assetDefDao: AssetDefDao
 
     @Transactional
-    override fun save(entity: AssetDefDto): AssetDefDto =
-        assetDefDao.save(toEntity(entity)).let(::toDto)
+    override fun create(model: AssetDefSaveModel): AssetDefDto {
+        val now = LocalDateTime.now()
+
+        val entityToSave = fillFromSaveModel(existingEntity = null, saveModel = model, now = now)
+        return assetDefDao.save(entityToSave).let(::toDto)
+    }
 
     @Transactional
-    override fun patchById(id: Long, dto: AssetDefPatchDto): AssetDefDto {
-        check(assetDefDao.existsById(id)) { "Asset Def with id [$id] does not exist" }
+    override fun updateById(id: Long, model: AssetDefSaveModel): AssetDefDto {
+        val now = LocalDateTime.now()
 
-        val entity = assetDefDao.findByIdOrNull(id)
-        check(entity != null) { "Asset Def with id [$id] does not exist" }
+        val existingEntity = assetDefDao.findByIdOrNull(id)
+        check(existingEntity != null) { "Asset Def with id [$id] does not exist" }
 
-        val updatedEntity = AssetDef(entity).apply {
-            this.type = dto.type ?: this.type
-            this.code = dto.code ?: this.code
-            this.name = dto.name ?: this.name
-            this.description = dto.description ?: this.description
-            this.imgOrigUrl = dto.imgOrigUrl ?: this.imgOrigUrl
-            this.auditDate = LocalDateTime.now()
-        }
+        val updatedEntity = fillFromSaveModel(existingEntity = existingEntity, saveModel = model, now = now)
+        return assetDefDao.save(updatedEntity).let(::toDto)
+    }
 
-        return assetDefDao.save(updatedEntity)
-            .let(::toDto)
+    @Transactional
+    override fun patchById(id: Long, model: AssetDefPatchModel): AssetDefDto {
+        val now = LocalDateTime.now()
+
+        val existingEntity = assetDefDao.findByIdOrNull(id)
+        check(existingEntity != null) { "Asset Def with id [$id] does not exist" }
+
+        val updatedEntity = fillFromPatchModel(existingEntity = existingEntity, patchModel = model, now = now)
+        return assetDefDao.save(updatedEntity).let(::toDto)
     }
 
     override fun findById(id: Long): AssetDefDto =
@@ -54,21 +65,93 @@ class AssetDefServiceImpl : AssetDefService {
             .sortedBy(AssetDefDto::code)
             .toList()
 
-    private fun toEntity(dto: AssetDefDto): AssetDef = AssetDef().apply {
-        this.id = dto.id
-        this.type = dto.type
-        this.code = dto.code
-        this.name = dto.name
-        this.description = dto.description
-        this.imgOrigUrl = dto.imgOrigUrl
+    private fun toDto(entity: AssetDef): AssetDefDto =
+        AssetDefDto(
+            id = entity.id,
+            type = entity.type!!,
+            code = entity.code!!,
+            name = entity.name!!,
+            description = entity.description,
+            imgOrigUrl = entity.imgOrigUrl,
+            cost = entity.cost?.let(::fromEntityCost).orEmpty(),
+            creationDate = entity.creationDate ?: error("creationDate was null for entity [${entity.id}]"),
+            auditDate = entity.auditDate ?: error("auditDate was null for entity [${entity.id}]"),
+        )
+
+    private fun fillFromSaveModel(
+        existingEntity: AssetDef? = null,
+        saveModel: AssetDefSaveModel,
+        now: LocalDateTime,
+    ): AssetDef =
+        AssetDef().apply {
+            this.id = existingEntity?.id
+            this.type = saveModel.type ?: existingEntity?.type ?: error("type was null")
+            this.code = saveModel.code ?: existingEntity?.code ?: error("code was null")
+            this.name = saveModel.name ?: existingEntity?.name ?: error("name was null")
+            this.description = saveModel.description ?: existingEntity?.description
+            this.imgOrigUrl = saveModel.imgOrigUrl ?: existingEntity?.imgOrigUrl
+            this.cost = toEntityCost(saveModel.cost) ?: existingEntity?.cost
+            this.creationDate = existingEntity?.creationDate ?: now
+            this.auditDate = now
+            existingEntity?.version?.let { this.version = it }
+        }
+
+    private fun fillFromPatchModel(
+        existingEntity: AssetDef,
+        patchModel: AssetDefPatchModel,
+        now: LocalDateTime,
+    ): AssetDef =
+        AssetDef(existingEntity).apply {
+            if (patchModel.type != null) {
+                this.type = patchModel.type
+            }
+            if (patchModel.code != null) {
+                this.code = patchModel.code
+            }
+            if (patchModel.name != null) {
+                this.name = patchModel.name
+            }
+            if (patchModel.description != null) {
+                this.description = patchModel.description
+            }
+            if (patchModel.imgOrigUrl != null) {
+                this.imgOrigUrl = patchModel.imgOrigUrl
+            }
+            if (patchModel.cost != null) {
+                this.cost = toEntityCost(patchModel.cost)
+            }
+            this.auditDate = now
+            existingEntity.version?.let { this.version = it }
+        }
+
+    private fun toEntityCost(elements: List<AssetDefSaveModel.CostElement>): String {
+        val assetDefsByCode = assetDefDao
+            .findByCodeIn(elements.map { it.assetDefCode }.toSet())
+            .associateBy(AssetDef::code)
+            .let { it as Map<String, AssetDef> }
+
+        val dtoElements = elements.map {
+            val assetDefId = assetDefsByCode.getValue(it.assetDefCode).id!!
+            AssetDefDto.CostElement(
+                assetDefId = assetDefId,
+                assetDefCode = it.assetDefCode,
+                count = it.count,
+            )
+        }
+
+        return MAPPER.writeValueAsString(dtoElements)
     }
 
-    private fun toDto(entity: AssetDef): AssetDefDto = AssetDefDto(
-        id = entity.id,
-        type = entity.type!!,
-        code = entity.code!!,
-        name = entity.name!!,
-        description = entity.description,
-        imgOrigUrl = entity.imgOrigUrl
-    )
+    private fun fromEntityCost(cost: String): List<AssetDefDto.CostElement> = MAPPER.readValue(cost)
+
+    companion object {
+
+        private val MAPPER: ObjectMapper = JsonMapper.builder()
+            .addModule(
+                KotlinModule.Builder()
+                    .configure(KotlinFeature.StrictNullChecks, true)
+                    .build(),
+            )
+            .build()
+    }
 }

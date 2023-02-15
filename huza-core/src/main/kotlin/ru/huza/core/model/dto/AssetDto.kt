@@ -6,5 +6,5 @@ data class AssetDto(
     val code: String? = null,
     val name: String? = null,
     val description: String? = null,
-    val quantity: Long
+    val quantity: Long,
 )

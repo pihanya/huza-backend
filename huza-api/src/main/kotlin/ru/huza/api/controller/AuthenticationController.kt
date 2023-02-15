@@ -43,30 +43,6 @@ class AuthenticationController {
     @Autowired
     lateinit var decoder: JwtDecoder
 
-//    @PostMapping(path = ["/register"])
-//    fun register(@RequestBody authRequest: AuthRequest): ResponseEntity<AuthResponse> {
-//        val (email, password) = authRequest
-//        val encryptedPassword = passwordEncoder.encode(password)
-//
-//        if (userDao.findByEmail(email) != null) {
-//            throw BadCredentialsException("User with email [$email] already exists")
-//        }
-//
-//        userDao.save(
-//            User().apply {
-//                this.email = email
-//                this.password = encryptedPassword
-//            }
-//        )
-//        authenticate(email, password)
-//
-//        val token = jwtTokenUtil.generateToken(
-//            userService.loadUserByUsername(email)
-//        )
-//
-//        return ResponseEntity.ok(AuthResponse(token))
-//    }
-
     @GetMapping(path = ["/info"])
     fun info(
         @RequestHeader("Authorization") authorizationHeader: String
@@ -116,6 +92,8 @@ class AuthenticationController {
             .claim("scope", scope)
             .build()
         val token = encoder.encode(JwtEncoderParameters.from(claims)).tokenValue
+
+        userService.trackAuth(serviceUser.id!!)
 
         return ResponseEntity.ok(AuthResponse(token))
     }

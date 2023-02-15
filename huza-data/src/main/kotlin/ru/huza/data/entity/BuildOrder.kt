@@ -8,12 +8,13 @@ import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
 import jakarta.persistence.JoinColumn
 import jakarta.persistence.OneToOne
+import jakarta.persistence.SequenceGenerator
 import jakarta.persistence.Table
 import org.hibernate.envers.Audited
 import ru.huza.data.model.enum.BuildOrderStatus
 
 @[Entity Audited]
-@Table(name = "build_order")
+@Table(name = BuildOrder.TABLE_NAME)
 class BuildOrder : BaseEntity() {
 
     private var id: Long? = null
@@ -36,11 +37,29 @@ class BuildOrder : BaseEntity() {
     var createdAsset: Asset? = null
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = TABLE_NAME + "_gen")
+    @SequenceGenerator(name = TABLE_NAME + "_gen", sequenceName = TABLE_NAME + "_seq", allocationSize = 1)
     override fun getId(): Long? = id
 
     override fun setId(id: Long?) {
         this.id = id
+    }
+
+    companion object {
+
+        const val TABLE_NAME: String = "build_order"
+
+        const val ID: String = "id"
+
+        const val ASSET_DEF: String = "assetDef"
+
+        const val CREATED_ASSET: String = "createdAsset"
+
+        const val STATUS: String = "status"
+
+        const val ORDINAL: String = "ordinal"
+
+        const val COMMENT: String = "comment"
     }
 }

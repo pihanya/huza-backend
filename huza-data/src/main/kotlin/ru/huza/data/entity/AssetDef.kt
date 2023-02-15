@@ -6,12 +6,22 @@ import jakarta.persistence.EntityListeners
 import jakarta.persistence.GeneratedValue
 import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
+import jakarta.persistence.SequenceGenerator
 import jakarta.persistence.Table
+import jakarta.persistence.UniqueConstraint
 import org.hibernate.envers.Audited
 import org.springframework.data.jpa.domain.support.AuditingEntityListener
 
 @[Entity Audited]
-@Table(name = "asset_def")
+@Table(
+    name = AssetDef.TABLE_NAME,
+    uniqueConstraints = [
+        UniqueConstraint(
+            name = "idx_${AssetDef.TABLE_NAME}__${AssetDef.CODE}",
+            columnNames = [AssetDef.CODE],
+        ),
+    ],
+)
 @EntityListeners(AuditingEntityListener::class)
 class AssetDef : BaseEntity {
 
@@ -32,6 +42,9 @@ class AssetDef : BaseEntity {
     @get:Column(name = "img_orig_url")
     var imgOrigUrl: String? = null
 
+    @get:Column(name = "cost")
+    var cost: String? = null
+
     constructor()
 
     constructor(entity: AssetDef): this() {
@@ -43,6 +56,7 @@ class AssetDef : BaseEntity {
         this.description = entity.description
 
         this.imgOrigUrl = entity.imgOrigUrl
+        this.cost = entity.cost
 
         this.creationDate = entity.creationDate
         this.auditDate = entity.auditDate
@@ -50,8 +64,9 @@ class AssetDef : BaseEntity {
     }
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = TABLE_NAME + "_gen")
+    @SequenceGenerator(name = TABLE_NAME + "_gen", sequenceName = TABLE_NAME + "_seq", allocationSize = 1)
     override fun getId(): Long? = id
 
     override fun setId(id: Long?) {
@@ -60,13 +75,18 @@ class AssetDef : BaseEntity {
 
     companion object {
 
+        const val TABLE_NAME: String = "asset_def"
+
+        const val ID: String = "id"
+
         const val TYPE: String = "type"
+
         const val CODE: String = "code"
+
         const val NAME: String = "name"
+
         const val DESCRIPTION: String = "description"
-        const val IMG_75_URL: String = "img75Url"
-        const val IMG_130_URL: String = "img130Url"
-        const val IMG_250_URL: String = "img250Url"
+
         const val IMG_ORIG_URL: String = "imgOrigUrl"
     }
 }

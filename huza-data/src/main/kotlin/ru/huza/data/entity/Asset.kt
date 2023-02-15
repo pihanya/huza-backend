@@ -7,16 +7,26 @@ import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
 import jakarta.persistence.JoinColumn
 import jakarta.persistence.ManyToOne
+import jakarta.persistence.SequenceGenerator
 import jakarta.persistence.Table
+import jakarta.persistence.UniqueConstraint
 import org.hibernate.envers.Audited
 
 @[Entity Audited]
-@Table(name = "asset")
+@Table(
+    name = Asset.TABLE_NAME,
+    uniqueConstraints = [
+        UniqueConstraint(
+            name = "idx_${Asset.TABLE_NAME}__${Asset.CODE}",
+            columnNames = [Asset.CODE],
+        ),
+    ],
+)
 class Asset : BaseEntity {
 
     private var id: Long? = null
 
-    @get:Column(name = "code")
+    @get:Column(name = "code", unique = true)
     var code: String? = null
 
     @get:Column(name = "name")
@@ -50,8 +60,9 @@ class Asset : BaseEntity {
     }
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = TABLE_NAME + "_gen")
+    @SequenceGenerator(name = TABLE_NAME + "_gen", sequenceName = TABLE_NAME + "_seq", allocationSize = 1)
     override fun getId(): Long? = id
 
     override fun setId(id: Long?) {
@@ -60,6 +71,12 @@ class Asset : BaseEntity {
 
     companion object {
 
+        const val TABLE_NAME: String = "asset"
+
+        const val ID: String = "id"
+
+        const val ASSET_DEF: String = "assetDef"
+
         const val CODE: String = "code"
 
         const val NAME: String = "name"
@@ -67,7 +84,5 @@ class Asset : BaseEntity {
         const val DESCRIPTION: String = "description"
 
         const val QUANTITY: String = "quantity"
-
-        const val ASSET_DEF: String = "assetDef"
     }
 }

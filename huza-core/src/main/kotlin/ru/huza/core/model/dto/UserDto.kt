@@ -1,5 +1,7 @@
 package ru.huza.core.model.dto
 
+import com.fasterxml.jackson.annotation.JsonIgnore
+import java.time.LocalDateTime
 import org.springframework.security.core.CredentialsContainer
 import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.authority.SimpleGrantedAuthority
@@ -17,21 +19,33 @@ class UserDto : UserDetails, CredentialsContainer {
 
     var role: String? = null
 
+    var authDate: LocalDateTime? = null
+
     constructor()
 
-    constructor(id: Long, email: String, username: String, password: String, role: String) {
+    constructor(
+        id: Long,
+        email: String,
+        username: String,
+        password: String,
+        role: String,
+        authDate: LocalDateTime?,
+    ) {
         this.id = id
         this.email = email
         this.username = username
         this.password = password
         this.role = role
+        this.authDate = authDate
     }
 
+    @JsonIgnore
     override fun getAuthorities(): Collection<GrantedAuthority> =
         listOf(
             SimpleGrantedAuthority(role)
         )
 
+    @JsonIgnore
     override fun getPassword(): String? = password
 
     fun setPassword(password: String) {
@@ -44,12 +58,16 @@ class UserDto : UserDetails, CredentialsContainer {
         this.username = username
     }
 
+    @JsonIgnore
     override fun isAccountNonExpired(): Boolean = true
 
+    @JsonIgnore
     override fun isAccountNonLocked(): Boolean = true
 
+    @JsonIgnore
     override fun isCredentialsNonExpired(): Boolean = true
 
+    @JsonIgnore
     override fun isEnabled(): Boolean = true
 
     override fun eraseCredentials() {

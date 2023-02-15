@@ -10,12 +10,9 @@ import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.ResponseStatus
 import org.springframework.web.bind.annotation.RestController
-import ru.huza.api.model.request.AssetSaveModel
-import ru.huza.core.model.dto.AssetDefLink
 import ru.huza.core.model.dto.AssetDto
-import ru.huza.core.model.dto.AssetPatchDto
-import ru.huza.core.model.dto.toLink
-import ru.huza.core.service.AssetDefService
+import ru.huza.core.model.dto.AssetPatchModel
+import ru.huza.core.model.dto.AssetSaveModel
 import ru.huza.core.service.AssetService
 
 @RestController
@@ -25,11 +22,8 @@ class AssetController {
     @set:Autowired
     lateinit var assetService: AssetService
 
-    @set:Autowired
-    lateinit var assetDefService: AssetDefService
-
     @GetMapping
-    fun findAllAssetDefs(
+    fun findAllAssets(
        // @AuthenticationPrincipal authentication: UserDetails
     ): List<AssetDto> = assetService.findAll()
 
@@ -38,14 +32,8 @@ class AssetController {
     fun createAsset(
         @RequestBody model: AssetSaveModel
        // @AuthenticationPrincipal authentication: UserDetails
-    ): AssetDto {
-        return assetService.save(
-            fillFromSaveModel(
-                model = model,
-                assetDefLink = assetDefService.findById(model.assetDefId!!).toLink()
-            )
-        )
-    }
+    ): AssetDto =
+        assetService.create(model)
 
     @GetMapping(path = ["/{id}"])
     fun getAssetById(
@@ -58,29 +46,11 @@ class AssetController {
         @PathVariable("id") id: Long,
         @RequestBody model: AssetSaveModel
        // @AuthenticationPrincipal authentication: UserDetails
-    ): AssetDto = assetService.save(
-        fillFromSaveModel(
-            asset = assetService.findById(id),
-            model = model
-        )
-    )
+    ): AssetDto = assetService.updateById(id = id, model = model)
 
     @PatchMapping(path = ["{id}"])
     fun patchAssetById(
         @PathVariable("id") id: Long,
-        @RequestBody data: AssetPatchDto,
-    ): AssetDto = assetService.patchById(id = id, dto = data)
-
-    private fun fillFromSaveModel(
-        asset: AssetDto? = null,
-        model: AssetSaveModel,
-        assetDefLink: AssetDefLink? = null
-    ): AssetDto = AssetDto(
-        id = asset?.id,
-        assetDef = assetDefLink ?: asset?.assetDef ?: error("assetDef was null"),
-        code = model.code ?: asset?.code,
-        name = model.name ?: asset?.name,
-        description = model.description ?: asset?.description,
-        quantity = model.quantity ?: asset?.quantity ?: error("quantity was null")
-    )
+        @RequestBody model: AssetPatchModel,
+    ): AssetDto = assetService.patchById(id = id, model = model)
 }

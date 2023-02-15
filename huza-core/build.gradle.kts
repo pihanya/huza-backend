@@ -11,4 +11,6 @@ dependencies {
 
     implementation(libs.spring.context)
     implementation(libs.spring.tx)
+
+    implementation(libs.jakarta.annotationApi)
 }

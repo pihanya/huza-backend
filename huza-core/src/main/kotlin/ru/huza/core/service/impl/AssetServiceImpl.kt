@@ -1,13 +1,14 @@
 package ru.huza.core.service.impl
 
-import java.time.LocalDate
 import java.time.LocalDateTime
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import ru.huza.core.exception.NotFoundException
 import ru.huza.core.model.dto.AssetDto
-import ru.huza.core.model.dto.AssetPatchDto
+import ru.huza.core.model.dto.AssetPatchModel
+import ru.huza.core.model.dto.AssetSaveModel
 import ru.huza.core.model.dto.toLink
 import ru.huza.core.service.AssetService
 import ru.huza.data.dao.AssetDao
@@ -24,35 +25,33 @@ class AssetServiceImpl : AssetService {
     lateinit var assetDefDao: AssetDefDao
 
     @Transactional
-    override fun save(entity: AssetDto): AssetDto {
-        val entityToSave = Asset().apply {
-            this.id = entity.id
-            this.code = entity.code
-            this.name = entity.name
-            this.description = entity.description
-            this.quantity = entity.quantity
-            this.assetDef = assetDefDao.findById(entity.assetDef.id).orElseThrow()
-        }
+    override fun create(model: AssetSaveModel): AssetDto {
+        val now = LocalDateTime.now()
+
+        val entityToSave = fillFromSaveModel(existingEntity = null, saveModel = model, now = now)
         return assetDao.save(entityToSave).let(::toDto)
     }
 
     @Transactional
-    override fun patchById(id: Long, dto: AssetPatchDto): AssetDto {
-        check(assetDao.existsById(id)) { "Asset with id [$id] does not exist" }
+    override fun updateById(id: Long, model: AssetSaveModel): AssetDto {
+        val now = LocalDateTime.now()
 
-        val entity = assetDao.findByIdOrNull(id)
-        check(entity != null) { "Asset with id [$id] does not exist" }
+        val existingEntity = assetDao.findByIdOrNull(id)
+        check(existingEntity != null) { "Asset with id [$id] does not exist" }
 
-        val updatedEntity = Asset(entity).apply {
-            this.code = dto.code ?: this.code
-            this.name = dto.name ?: this.name
-            this.description = dto.description ?: this.description
-            this.quantity = dto.quantity ?: this.quantity
-            this.auditDate = LocalDateTime.now()
-        }
+        val updatedEntity = fillFromSaveModel(existingEntity = existingEntity, saveModel = model, now = now)
+        return assetDao.save(updatedEntity).let(::toDto)
+    }
 
-        return assetDao.save(updatedEntity)
-            .let(::toDto)
+    @Transactional
+    override fun patchById(id: Long, model: AssetPatchModel): AssetDto {
+        val now = LocalDateTime.now()
+
+        val existingEntity = assetDao.findByIdOrNull(id)
+        check(existingEntity != null) { "Asset with id [$id] does not exist" }
+
+        val updatedEntity = fillFromPatchModel(existingEntity = existingEntity, patchModel = model, now = now)
+        return assetDao.save(updatedEntity).let(::toDto)
     }
 
     override fun findById(id: Long): AssetDto =
@@ -63,9 +62,9 @@ class AssetServiceImpl : AssetService {
             .map(::toDto)
             .sortedWith(
                 compareBy(
-                    { it.assetDef.code },
-                    AssetDto::quantity
-                )
+                    { it.assetDef.id },
+                    AssetDto::quantity,
+                ),
             )
             .toList()
 
@@ -75,7 +74,7 @@ class AssetServiceImpl : AssetService {
                 if (filter.code != null) put(Asset.CODE, filter.code)
                 if (filter.assetDefType != null) put(AssetDao.FilterParamNames.ASSET_DEF_TYPE, filter.assetDefType)
                 if (filter.assetDefCode != null) put(AssetDao.FilterParamNames.ASSET_DEF_CODE, filter.assetDefCode)
-            }
+            },
         ).map(::toDto)
 
     private fun toDto(entity: Asset): AssetDto = AssetDto(
@@ -84,6 +83,42 @@ class AssetServiceImpl : AssetService {
         code = entity.code,
         name = entity.name,
         description = entity.description,
-        quantity = entity.quantity!!
+        quantity = entity.quantity!!,
     )
+
+    private fun fillFromSaveModel(
+        existingEntity: Asset? = null,
+        saveModel: AssetSaveModel,
+        now: LocalDateTime,
+    ): Asset {
+        val assetDefId = checkNotNull(saveModel.assetDefId ?: existingEntity?.assetDef?.id)
+        val assetDef = assetDefDao.findByIdOrNull(assetDefId)
+            ?: throw NotFoundException("Asset Def with id [$assetDefId] does not exist")
+
+        return Asset().apply {
+            this.id = existingEntity?.id
+            this.assetDef = assetDef
+            this.code = saveModel.code ?: existingEntity?.code
+            this.name = saveModel.name ?: existingEntity?.name
+            this.description = saveModel.description ?: existingEntity?.description
+            this.quantity = saveModel.quantity ?: existingEntity?.quantity
+            this.creationDate = existingEntity?.creationDate ?: now
+            this.auditDate = now
+            existingEntity?.version?.let { this.version = it }
+        }
+    }
+
+    private fun fillFromPatchModel(
+        existingEntity: Asset,
+        patchModel: AssetPatchModel,
+        now: LocalDateTime,
+    ): Asset =
+        Asset(existingEntity).apply {
+            this.code = patchModel.code ?: existingEntity.code
+            this.name = patchModel.name ?: existingEntity.name
+            this.description = patchModel.description ?: existingEntity.description
+            this.quantity = patchModel.quantity ?: existingEntity.quantity
+            this.auditDate = now
+            existingEntity.version?.let { this.version = it }
+        }
 }
