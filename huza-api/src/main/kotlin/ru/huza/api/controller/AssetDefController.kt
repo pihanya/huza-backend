@@ -2,6 +2,7 @@ package ru.huza.api.controller
 
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
+import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PatchMapping
 import org.springframework.web.bind.annotation.PathVariable
@@ -29,6 +30,7 @@ class AssetDefController {
 
     @PostMapping
     @ResponseStatus(code = HttpStatus.CREATED)
+    @PreAuthorize("hasAuthority('SCOPE_admin')")
     fun createAssetDef(
         @RequestBody model: AssetDefSaveModel
         // @AuthenticationPrincipal authentication: UserDetails
@@ -43,6 +45,7 @@ class AssetDefController {
     ): AssetDefDto = assetDefService.findById(id)
 
     @PostMapping(path = ["/{id}"])
+    @PreAuthorize("hasAuthority('SCOPE_admin')")
     fun updateAssetDefById(
         @PathVariable("id") id: Long,
         @RequestBody model: AssetDefSaveModel
@@ -50,6 +53,7 @@ class AssetDefController {
     ): AssetDefDto = assetDefService.updateById(id, model)
 
     @PatchMapping(path = ["/{id}"])
+    @PreAuthorize("hasAuthority('SCOPE_admin')")
     fun patchAssetDefById(
         @PathVariable("id") id: Long,
         @RequestBody model: AssetDefPatchModel
