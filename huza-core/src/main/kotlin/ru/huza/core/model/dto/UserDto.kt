@@ -19,6 +19,8 @@ class UserDto : UserDetails, CredentialsContainer {
 
     var role: String? = null
 
+    var avatarUrl: String? = null
+
     var authDate: LocalDateTime? = null
 
     constructor()
@@ -29,6 +31,7 @@ class UserDto : UserDetails, CredentialsContainer {
         username: String,
         password: String,
         role: String,
+        avatarUrl: String,
         authDate: LocalDateTime?,
     ) {
         this.id = id
@@ -36,6 +39,7 @@ class UserDto : UserDetails, CredentialsContainer {
         this.username = username
         this.password = password
         this.role = role
+        this.avatarUrl = avatarUrl
         this.authDate = authDate
     }
 

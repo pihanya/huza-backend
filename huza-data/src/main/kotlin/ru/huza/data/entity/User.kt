@@ -40,6 +40,9 @@ class User : BaseEntity {
     @Column(name = "role", nullable = false)
     var role: String? = null
 
+    @Column(name = "avatar_url", nullable = false)
+    var avatarUrl: String? = null
+
     @get:Column(name = "auth_date")
     var authDate: LocalDateTime? = null
 

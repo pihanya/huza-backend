@@ -5,4 +5,5 @@ data class UserSaveModel(
     val username: String? = null,
     val password: String? = null,
     val role: String? = null,
+    val avatarUrl: String? = null,
 )
