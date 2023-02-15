@@ -99,7 +99,12 @@ class SecurityConfig {
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             .and()
                 .formLogin().disable()
-            .cors { cors -> cors.configurationSource { CorsConfiguration().applyPermitDefaultValues() } }
+            .cors { cors ->
+                cors.configurationSource {
+                    CorsConfiguration().applyPermitDefaultValues()
+                        .apply { addAllowedMethod(HttpMethod.PATCH) }
+                }
+            }
                 .exceptionHandling()
                     .authenticationEntryPoint(jwtAuthenticationEntryPoint)
                     .accessDeniedHandler(jwtAuthenticationEntryPoint)
