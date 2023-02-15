@@ -7,4 +7,7 @@ data class AssetDefPatchModel(
     val description: String? = null,
     val imgOrigUrl: String? = null,
     val cost: List<AssetDefSaveModel.CostElement>? = null,
+    val fraction: String? = null,
+    val level: Int? = null,
+    val magicSchool: String? = null,
 )

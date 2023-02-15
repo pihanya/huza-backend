@@ -13,6 +13,9 @@ data class AssetDefDto(
     val creationDate: LocalDateTime,
     val auditDate: LocalDateTime,
     val cost: List<CostElement>,
+    val fraction: String? = null,
+    val level: Int? = null,
+    val magicSchool: String? = null,
 ) {
 
     data class CostElement(

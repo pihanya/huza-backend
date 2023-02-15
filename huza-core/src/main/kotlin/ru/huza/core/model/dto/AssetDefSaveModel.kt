@@ -9,6 +9,9 @@ data class AssetDefSaveModel(
     val description: String? = null,
     val imgOrigUrl: String? = null,
     val cost: List<CostElement> = emptyList(),
+    val fraction: String? = null,
+    val level: Int? = null,
+    val magicSchool: String? = null,
 ) {
 
     data class CostElement(

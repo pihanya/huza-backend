@@ -45,6 +45,15 @@ class AssetDef : BaseEntity {
     @get:Column(name = "cost")
     var cost: String? = null
 
+    @get:Column(name = "fraction")
+    var fraction: String? = null
+
+    @get:Column(name = "level")
+    var level: Int? = null
+
+    @get:Column(name = "magic_school")
+    var magicSchool: String? = null
+
     constructor()
 
     constructor(entity: AssetDef): this() {
@@ -57,6 +66,9 @@ class AssetDef : BaseEntity {
 
         this.imgOrigUrl = entity.imgOrigUrl
         this.cost = entity.cost
+        this.fraction = entity.fraction
+        this.level = entity.level
+        this.magicSchool = entity.magicSchool
 
         this.creationDate = entity.creationDate
         this.auditDate = entity.auditDate
