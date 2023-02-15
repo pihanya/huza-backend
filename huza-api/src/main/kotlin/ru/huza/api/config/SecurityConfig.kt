@@ -103,6 +103,7 @@ class SecurityConfig {
                 cors.configurationSource {
                     CorsConfiguration().applyPermitDefaultValues()
                         .apply { addAllowedMethod(HttpMethod.PATCH) }
+                        .apply { addAllowedMethod(HttpMethod.DELETE) }
                 }
             }
                 .exceptionHandling()
