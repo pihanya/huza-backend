@@ -1,3 +1,8 @@
+huza:
+  api-url: 'http://localhost:4242/api/'
+  file-storage-path: .temp/2023-02-14/tmp.2023-02-14-05-16-53/huza-files
+  owner-role-name: owner
+
 server:
   port: 4242
   servlet.context-path: '/api'
@@ -14,7 +19,7 @@ spring:
 
   jpa:
     generate-ddl: true
-    hibernate.ddl-auto: create
+    hibernate.ddl-auto: create-drop
 
 jwt:
   private-key: 'key.pem'

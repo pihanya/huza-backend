@@ -14,7 +14,6 @@ plugins {
 dependencies {
     runtimeOnly("org.postgresql:postgresql:42.5.0")
 
-
     implementation("org.springframework.boot:spring-boot-starter-data-rest")
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
 
@@ -33,8 +32,12 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
 
+    implementation(projects.huzaApp)
+
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.springframework.security:spring-security-test")
+
+
 
     testImplementation("junit:junit:4.13.1")
     testImplementation("org.projectlombok:lombok:1.18.24")

@@ -14,6 +14,10 @@ public class UserRow {
         return Integer.parseInt(row.findElements(By.tagName("td")).get(0).getText());
     }
 
+    public String getName() {
+        return row.findElements(By.tagName("td")).get(0).getText();
+    }
+
     public String getEmail() {
         return (row.findElements(By.tagName("td")).get(1).getText());
     }

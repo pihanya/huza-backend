@@ -4,15 +4,22 @@ import com.paulhammant.ngwebdriver.NgWebDriver;
 import org.hamcrest.CoreMatchers;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.function.Executable;
+import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.web.server.LocalServerPort;
+import ru.huza.selenium.pages.BuildOrderPage;
 import ru.huza.selenium.pages.LoginPage;
+import ru.huza.selenium.pages.NewBuildOrderPage;
 
+import java.awt.*;
+import java.awt.datatransfer.StringSelection;
+import java.awt.event.KeyEvent;
 import java.time.Duration;
 import java.util.Set;
 
@@ -122,5 +129,55 @@ public abstract class SeleniumTestBase {
 
         loginPage.getLoginButton().click();
         redirectWait(loginPageUrl);
+    }
+
+    protected void uploadImg(String path) throws AWTException {
+        StringSelection ss = new StringSelection(path);
+        System.setProperty("java.awt.headless", "false");
+        Toolkit.getDefaultToolkit().getSystemClipboard().setContents(ss, null);
+        //native key strokes for CTRL, V and ENTER keys
+        Robot robot = new Robot();
+        // press Contol+V for pasting
+        robot.keyPress(KeyEvent.VK_CONTROL);
+        robot.keyPress(KeyEvent.VK_V);
+        // release Contol+V for pasting
+        robot.keyRelease(KeyEvent.VK_V);
+        robot.keyRelease(KeyEvent.VK_CONTROL);
+        // for pressing and releasing Enter
+        robot.keyPress(KeyEvent.VK_ENTER);
+        robot.keyRelease(KeyEvent.VK_ENTER);
+        // wait for img loading
+        while (driver.findElement(By.tagName("img")).equals(null)); //todo: replace while
+    }
+
+    protected void createBuildOrder(boolean headOrder, String buildingType, String comment) {
+        String newBuildOrderPageUrl = driver.getCurrentUrl();
+        var newBuildOrderPage = this.initPage(NewBuildOrderPage.class);
+        if (headOrder) {
+            newBuildOrderPage.getHeadButton().click();
+        } else {
+            newBuildOrderPage.getEndButton().click();
+        }
+        newBuildOrderPage.editType(buildingType);
+        newBuildOrderPage.getComment().sendKeys(comment);
+        newBuildOrderPage.getCreateButton().submit();
+        this.redirectWait(newBuildOrderPageUrl);
+    }
+
+    protected void acceptBuildOrder() {
+        String buildOrderPageUrl = driver.getCurrentUrl();
+        var buildOrderPage = this.initPage(BuildOrderPage.class);
+        buildOrderPage.getAcceptBuildOrderButton().click();
+        this.redirectWait(buildOrderPageUrl);
+    }
+
+    protected void denyBuildOrder() {
+        String buildOrderPageUrl = driver.getCurrentUrl();
+        var buildOrderPage = this.initPage(BuildOrderPage.class);
+        buildOrderPage.getDenyBuildOrderButton().click();
+        this.redirectWait(buildOrderPageUrl);
+    }
+    protected void logout() {
+        driver.findElement(By.xpath("//a[contains(text(),'Выйти')]")).click();
     }
 }

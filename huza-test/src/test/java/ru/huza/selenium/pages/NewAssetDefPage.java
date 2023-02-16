@@ -19,9 +19,9 @@ public class NewAssetDefPage {
     @FindBy(id = "asset_def_type")
     private WebElement typeSelect;
 
-    public void editType() {
+    public void editType(String category) {
         typeSelect.click();
-        driver.findElement(By.xpath("//option[contains(text(),'Здание')]")).click();
+        driver.findElement(By.xpath("//option[contains(text(),'" + category + "')]")).click();
     }
 
     @FindBy(xpath = "//div[contains(text(),'Добавить изображение')]")
