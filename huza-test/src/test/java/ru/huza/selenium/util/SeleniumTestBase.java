@@ -20,6 +20,10 @@ import ru.huza.selenium.pages.NewBuildOrderPage;
 import java.awt.*;
 import java.awt.datatransfer.StringSelection;
 import java.awt.event.KeyEvent;
+import java.io.File;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.nio.file.Paths;
 import java.time.Duration;
 import java.util.Set;
 
@@ -131,8 +135,13 @@ public abstract class SeleniumTestBase {
         redirectWait(loginPageUrl);
     }
 
-    protected void uploadImg(String path) throws AWTException {
-        StringSelection ss = new StringSelection(path);
+    protected void uploadImg(String path) throws AWTException, URISyntaxException {
+        URL res = getClass().getClassLoader().getResource(path);
+        File file = Paths.get(res.toURI()).toFile();
+        String absolutePath = file.getAbsolutePath();
+
+
+        StringSelection ss = new StringSelection(absolutePath);
         System.setProperty("java.awt.headless", "false");
         Toolkit.getDefaultToolkit().getSystemClipboard().setContents(ss, null);
         //native key strokes for CTRL, V and ENTER keys

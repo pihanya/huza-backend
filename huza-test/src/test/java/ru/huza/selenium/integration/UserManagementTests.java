@@ -12,6 +12,7 @@ import ru.huza.selenium.util.SeleniumTest;
 import ru.huza.selenium.util.SeleniumTestBase;
 
 import java.awt.*;
+import java.net.URISyntaxException;
 import java.time.Duration;
 import java.util.List;
 
@@ -19,7 +20,7 @@ import java.util.List;
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class UserManagementTests extends SeleniumTestBase {
     @Test
-    public void test() throws AWTException, InterruptedException {
+    public void test() throws AWTException, InterruptedException, URISyntaxException {
         this.driver.get(this.composeUrl("/"));
 
         final String adminEmail = "admin@itmo.ru", adminPass = "password";
@@ -48,7 +49,7 @@ public class UserManagementTests extends SeleniumTestBase {
         newUserPage.editRole(role);
 
         newUserPage.getImgInput().click();
-        this.uploadImg("/home/nikolay/Загрузки/8adefe5af862b4f9cec286c6ee4722cb.jpg"); //todo: move to constants
+        this.uploadImg("images/testpic.jpg"); //todo: move to constants
 
         newUserPage.getCreateButton().submit();
 
@@ -77,5 +78,24 @@ public class UserManagementTests extends SeleniumTestBase {
         editUserPage.editRole(editedRole);
         driver.findElement(By.xpath("//button[contains(text(),'Создать')]")).submit();
         this.redirectWait(editUserPageUrl);
+
+        userRows = userManagementPage.getUserRows();
+        UserRow editedUserRow = userRows.stream()
+                .filter(userRow -> userRow.getEmail().equals(editedEmail))
+                .findAny()
+                .orElse(null);
+        Assertions.assertEquals(userRows.size(), expectedRowsCount);
+        Assertions.assertNotNull(editedUserRow);
+
+        driver.findElement(By.xpath("//tr//td[contains(text(),'" + editedEmail + "')]")).click();
+        this.redirectWait(userManagementPageUrl);
+
+        editUserPageUrl = driver.getCurrentUrl();
+        editUserPage.getDeleteButton().click();
+        driver.findElement(By.xpath("//button[contains(text(),'Удалить!')]")).click();
+        this.redirectWait(editUserPageUrl);
+
+        userRows = userManagementPage.getUserRows();
+        Assertions.assertEquals(userRows.size(), expectedRowsCount - 1);
     }
 }

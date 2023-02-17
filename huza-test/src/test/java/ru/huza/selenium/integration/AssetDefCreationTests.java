@@ -15,6 +15,7 @@ import ru.huza.selenium.util.SeleniumTestBase;
 import java.awt.*;
 import java.awt.datatransfer.StringSelection;
 import java.awt.event.KeyEvent;
+import java.net.URISyntaxException;
 import java.util.List;
 
 @SeleniumTest
@@ -24,7 +25,7 @@ import java.util.List;
 public class AssetDefCreationTests extends SeleniumTestBase {
 
     @Test
-    public void test() throws AWTException {
+    public void test() throws AWTException, URISyntaxException {
         this.driver.get(this.composeUrl("/"));
 
         final String adminEmail = "admin@itmo.ru", adminPass = "password";
@@ -51,7 +52,7 @@ public class AssetDefCreationTests extends SeleniumTestBase {
         newAssetDefPage.getNameInput().sendKeys(newAssetDefName);
         newAssetDefPage.getDescriptionInput().sendKeys(newAssetDefDescription);
 
-        String imgFile = "/home/nikolay/Загрузки/8adefe5af862b4f9cec286c6ee4722cb.jpg"; //todo: move to constants
+        String imgFile = "images/testpic.jpg"; //todo: move to constants
         WebElement addFile = newAssetDefPage.getImgInput();
         addFile.click();
         this.uploadImg(imgFile);
