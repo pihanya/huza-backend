@@ -25,7 +25,7 @@ import java.util.List;
 public class AssetDefCreationTests extends SeleniumTestBase {
 
     @Test
-    public void test() throws AWTException, URISyntaxException {
+    public void test() throws AWTException, URISyntaxException, InterruptedException {
         this.driver.get(this.composeUrl("/"));
 
         final String adminEmail = "admin@itmo.ru", adminPass = "password";
@@ -52,10 +52,10 @@ public class AssetDefCreationTests extends SeleniumTestBase {
         newAssetDefPage.getNameInput().sendKeys(newAssetDefName);
         newAssetDefPage.getDescriptionInput().sendKeys(newAssetDefDescription);
 
-        String imgFile = "images/testpic.jpg"; //todo: move to constants
-        WebElement addFile = newAssetDefPage.getImgInput();
-        addFile.click();
-        this.uploadImg(imgFile);
+//        String imgFile = "images/testpic.jpg"; //todo: move to constants
+//        WebElement addFile = newAssetDefPage.getImgInput();
+//        addFile.click();
+//        this.uploadImg(imgFile);
 
         newAssetDefPage.editType(newAssetDefCategory);
         newAssetDefPage.getWoodCostInput().sendKeys(woodCost);

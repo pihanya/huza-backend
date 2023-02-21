@@ -135,7 +135,7 @@ public abstract class SeleniumTestBase {
         redirectWait(loginPageUrl);
     }
 
-    protected void uploadImg(String path) throws AWTException, URISyntaxException {
+    protected void uploadImg(String path) throws AWTException, URISyntaxException, InterruptedException {
         URL res = getClass().getClassLoader().getResource(path);
         File file = Paths.get(res.toURI()).toFile();
         String absolutePath = file.getAbsolutePath();
@@ -152,6 +152,7 @@ public abstract class SeleniumTestBase {
         // release Contol+V for pasting
         robot.keyRelease(KeyEvent.VK_V);
         robot.keyRelease(KeyEvent.VK_CONTROL);
+        //Thread.sleep(1000);
         // for pressing and releasing Enter
         robot.keyPress(KeyEvent.VK_ENTER);
         robot.keyRelease(KeyEvent.VK_ENTER);

@@ -1,6 +1,5 @@
 package ru.huza.selenium.pages;
 
-import lombok.Getter;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -11,27 +10,26 @@ import java.time.Duration;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Getter
-public class NewSpellPage {
+public class NewUnitPage {
 
     private final WebDriver driver;
 
-    public void waitUntilAddSpellButtonLoaded(int rowsCount) throws InterruptedException {
+    public void waitUntilAddUnitButtonLoaded(int rowsCount) throws InterruptedException {
         Thread.sleep(rowsCount*100);
         new WebDriverWait(driver, Duration.ofSeconds(10))
-                .until(ExpectedConditions.elementToBeClickable(getAddSpellButton()));
+                .until(ExpectedConditions.elementToBeClickable(getAddUnitButton()));
     }
 
-    public WebElement getAddSpellButton() {
+    public WebElement getAddUnitButton() {
         return this.driver.findElement(By.xpath("//button[contains(text(),'Добавить')]"));
     }
 
-    public List<SpellRow> getSpellRows() {
+    public List<UnitRow> getUnitRows() {
         return this.driver.findElements(By.xpath("//tbody//tr")).stream()
-                .map(SpellRow::new).collect(Collectors.toList());
+                .map(UnitRow::new).collect(Collectors.toList());
     }
 
-    public NewSpellPage(WebDriver driver) {
+    public NewUnitPage(WebDriver driver) {
         this.driver = driver;
     }
 }

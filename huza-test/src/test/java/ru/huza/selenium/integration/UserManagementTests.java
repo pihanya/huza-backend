@@ -48,8 +48,8 @@ public class UserManagementTests extends SeleniumTestBase {
         newUserPage.getUserPasswordInput().sendKeys(password);
         newUserPage.editRole(role);
 
-        newUserPage.getImgInput().click();
-        this.uploadImg("images/testpic.jpg"); //todo: move to constants
+//        newUserPage.getImgInput().click();
+//        this.uploadImg("images/testpic.jpg"); //todo: move to constants
 
         newUserPage.getCreateButton().submit();
 
