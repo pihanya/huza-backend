@@ -8,6 +8,7 @@ import ru.huza.core.model.dto.toLink
 import ru.huza.core.model.request.BuildOrderCreateRequest
 import ru.huza.core.model.request.BuildOrderSetStatusRequest
 import ru.huza.core.service.BuildOrderService
+import ru.huza.core.util.toDto
 import ru.huza.data.dao.AssetDao
 import ru.huza.data.dao.AssetDefDao
 import ru.huza.data.dao.BuildOrderDao
@@ -134,7 +135,7 @@ class BuildOrderServiceImpl : BuildOrderService {
     private fun toDto(entity: BuildOrder): BuildOrderDto =
         BuildOrderDto(
             id = entity.id,
-            assetDef = entity.assetDef!!.toLink(),
+            assetDef = entity.assetDef!!.toDto(),
             createdAsset = entity.createdAsset?.toLink(),
             status = entity.status!!,
             comment = entity.comment,

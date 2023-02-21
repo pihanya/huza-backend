@@ -9,7 +9,7 @@ import ru.huza.core.exception.NotFoundException
 import ru.huza.core.model.dto.AssetDto
 import ru.huza.core.model.dto.AssetPatchModel
 import ru.huza.core.model.dto.AssetSaveModel
-import ru.huza.core.model.dto.toLink
+import ru.huza.core.util.toDto
 import ru.huza.core.service.AssetService
 import ru.huza.data.dao.AssetDao
 import ru.huza.data.dao.AssetDefDao
@@ -79,7 +79,7 @@ class AssetServiceImpl : AssetService {
 
     private fun toDto(entity: Asset): AssetDto = AssetDto(
         id = entity.id,
-        assetDef = entity.assetDef!!.toLink(),
+        assetDef = entity.assetDef!!.toDto(),
         code = entity.code,
         name = entity.name,
         description = entity.description,
