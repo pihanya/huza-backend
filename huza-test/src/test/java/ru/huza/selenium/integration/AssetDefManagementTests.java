@@ -3,18 +3,11 @@ package ru.huza.selenium.integration;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
-import org.openqa.selenium.WebElement;
-import org.springframework.test.context.jdbc.Sql;
-import ru.huza.selenium.pages.AdminHomePage;
-import ru.huza.selenium.pages.AssetDefRow;
-import ru.huza.selenium.pages.AssetDefsPage;
-import ru.huza.selenium.pages.NewAssetDefPage;
+import ru.huza.selenium.pages.*;
 import ru.huza.selenium.util.SeleniumTest;
 import ru.huza.selenium.util.SeleniumTestBase;
 
 import java.awt.*;
-import java.awt.datatransfer.StringSelection;
-import java.awt.event.KeyEvent;
 import java.net.URISyntaxException;
 import java.util.List;
 
@@ -22,7 +15,7 @@ import java.util.List;
 //@Sql(value = {"/initScripts/create-admin.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
 //@Sql(value = {"/initScripts/delete-admin.sql"}, executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-public class AssetDefCreationTests extends SeleniumTestBase {
+public class AssetDefManagementTests extends SeleniumTestBase {
 
     @Test
     public void test() throws AWTException, URISyntaxException, InterruptedException {
@@ -74,5 +67,31 @@ public class AssetDefCreationTests extends SeleniumTestBase {
         Assertions.assertEquals(newAssetDefRow.getName(), newAssetDefName);
         Assertions.assertEquals(newAssetDefRow.getCategory(), newAssetDefCategory);
         Assertions.assertEquals(newAssetDefRow.getCost(), expectedCost);
+
+        newAssetDefRow.selectRow();
+        this.redirectWait(assetDefsPageUrl);
+
+        String editAssetDefPageUrl = driver.getCurrentUrl();
+        final var editAssetDefPage = this.initPage(EditAssetDefPage.class);
+        String editedName= "Измененное название", editedDescription = "Изменненое тестовое описание";
+        String editedGoldCost = "20", editedCost = "Древесина - 50, Золото - 20";;
+        editAssetDefPage.getNameInput().clear();
+        editAssetDefPage.getNameInput().sendKeys(editedName);
+        editAssetDefPage.getDescriptionInput().clear();
+        editAssetDefPage.getDescriptionInput().sendKeys(editedDescription);
+        editAssetDefPage.getGoldCostInput().clear();
+        editAssetDefPage.getGoldCostInput().sendKeys(editedGoldCost);
+        editAssetDefPage.getSaveButton().submit();
+        editAssetDefPage.getSaveConfirmButton().click();
+        this.redirectWait(editAssetDefPageUrl);
+
+        assetDefRowList = assetDefsPage.getAssetDefRows();
+        AssetDefRow editedAssetDefRow = assetDefRowList.stream()
+                .filter(assetDefRow -> assetDefRow.getName().equals(editedName))
+                .findAny()
+                .orElse(null);
+        Assertions.assertNotNull(editedAssetDefRow);
+        Assertions.assertEquals(editedAssetDefRow.getName(), editedName);
+        Assertions.assertEquals(editedAssetDefRow.getCost(), editedCost);
     }
 }

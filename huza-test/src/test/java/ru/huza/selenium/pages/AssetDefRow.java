@@ -7,6 +7,10 @@ public class AssetDefRow {
 
     private final WebElement row;
 
+    public void selectRow() {
+        row.findElement(By.tagName("td")).click();
+    }
+
     public AssetDefRow(WebElement row) {
         this.row = row;
     }
