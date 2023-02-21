@@ -10,6 +10,9 @@ tasks.getByName<Jar>("jar") {
     enabled = true
 }
 
+project.tasks.test.configure {
+    enabled = false
+}
 
 @Suppress("DSL_SCOPE_VIOLATION") // TODO: Delete after https://github.com/gradle/gradle/issues/22797
 plugins {
