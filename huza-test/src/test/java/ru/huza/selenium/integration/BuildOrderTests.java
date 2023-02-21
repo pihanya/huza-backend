@@ -3,8 +3,6 @@ package ru.huza.selenium.integration;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
-import org.openqa.selenium.By;
-import org.openqa.selenium.WebElement;
 import ru.huza.selenium.pages.*;
 import ru.huza.selenium.util.SeleniumTest;
 import ru.huza.selenium.util.SeleniumTestBase;

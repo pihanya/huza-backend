@@ -2,12 +2,9 @@ package ru.huza.selenium.pages;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
-import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
 public class UserRow {
-    //private final WebDriver driver;
-
     private final WebElement row;
 
     public int getId() {
