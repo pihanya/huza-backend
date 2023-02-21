@@ -108,6 +108,7 @@ class DatabaseFiller(
                 name = "Армагедон",
                 description = "Armageddon is a 4th level spell in the School of Fire Magic. It damages all creatures on the battlefield, including the caster's own troops. However, a few creatures can resist the spell due to their spell immunities.",
                 imgOrigUrl = "https://heroes.thelazy.net/images/archive/6/63/20170316101406%21Armageddon.png",
+                magicSchool = MagicSchool.FIRE.code,
             ),
         )
 
