@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.json.JsonMapper
 import com.fasterxml.jackson.module.kotlin.KotlinFeature
 import com.fasterxml.jackson.module.kotlin.KotlinModule
-import com.fasterxml.jackson.module.kotlin.readValue
 import java.time.LocalDateTime
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.repository.findByIdOrNull
@@ -13,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional
 import ru.huza.core.model.dto.AssetDefDto
 import ru.huza.core.model.dto.AssetDefPatchModel
 import ru.huza.core.model.dto.AssetDefSaveModel
+import ru.huza.core.util.toDto
 import ru.huza.core.service.AssetDefService
 import ru.huza.data.dao.AssetDefDao
 import ru.huza.data.entity.AssetDef
@@ -28,7 +28,7 @@ class AssetDefServiceImpl : AssetDefService {
         val now = LocalDateTime.now()
 
         val entityToSave = fillFromSaveModel(existingEntity = null, saveModel = model, now = now)
-        return assetDefDao.save(entityToSave).let(::toDto)
+        return assetDefDao.save(entityToSave).let(AssetDef::toDto)
     }
 
     @Transactional
@@ -39,7 +39,7 @@ class AssetDefServiceImpl : AssetDefService {
         check(existingEntity != null) { "Asset Def with id [$id] does not exist" }
 
         val updatedEntity = fillFromSaveModel(existingEntity = existingEntity, saveModel = model, now = now)
-        return assetDefDao.save(updatedEntity).let(::toDto)
+        return assetDefDao.save(updatedEntity).let(AssetDef::toDto)
     }
 
     @Transactional
@@ -50,36 +50,20 @@ class AssetDefServiceImpl : AssetDefService {
         check(existingEntity != null) { "Asset Def with id [$id] does not exist" }
 
         val updatedEntity = fillFromPatchModel(existingEntity = existingEntity, patchModel = model, now = now)
-        return assetDefDao.save(updatedEntity).let(::toDto)
+        return assetDefDao.save(updatedEntity).let(AssetDef::toDto)
     }
 
     override fun findById(id: Long): AssetDefDto =
-        assetDefDao.findById(id).map(::toDto).orElseThrow()
+        assetDefDao.findById(id).map(AssetDef::toDto).orElseThrow()
 
     override fun findByCode(code: String): AssetDefDto? =
-        assetDefDao.findByCode(code)?.let(::toDto)
+        assetDefDao.findByCode(code)?.let(AssetDef::toDto)
 
     override fun findAll(): List<AssetDefDto> =
         assetDefDao.findAll().asSequence()
-            .map(::toDto)
+            .map(AssetDef::toDto)
             .sortedBy(AssetDefDto::code)
             .toList()
-
-    private fun toDto(entity: AssetDef): AssetDefDto =
-        AssetDefDto(
-            id = entity.id,
-            type = entity.type!!,
-            code = entity.code!!,
-            name = entity.name!!,
-            imgOrigUrl = entity.imgOrigUrl!!,
-            description = entity.description,
-            cost = entity.cost?.let(::fromEntityCost).orEmpty(),
-            fraction = entity.fraction,
-            level = entity.level,
-            magicSchool = entity.magicSchool,
-            creationDate = entity.creationDate ?: error("creationDate was null for entity [${entity.id}]"),
-            auditDate = entity.auditDate ?: error("auditDate was null for entity [${entity.id}]"),
-        )
 
     private fun fillFromSaveModel(
         existingEntity: AssetDef? = null,
@@ -156,8 +140,6 @@ class AssetDefServiceImpl : AssetDefService {
 
         return MAPPER.writeValueAsString(dtoElements)
     }
-
-    private fun fromEntityCost(cost: String): List<AssetDefDto.CostElement> = MAPPER.readValue(cost)
 
     companion object {
 
