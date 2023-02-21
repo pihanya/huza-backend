@@ -20,7 +20,7 @@ class ResponseExceptionHandler {
         ex: NotFoundException,
         request: HttpServletRequest,
     ): ResponseEntity<HuzaErrorResponse> {
-        logHandledException(ex, request)
+        logger.error(ex) { "Handled exception during HTTP request" }
 
         val response = HuzaErrorResponse(
             message = ex.message ?: ex::class.java.name,
@@ -29,35 +29,17 @@ class ResponseExceptionHandler {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response)
     }
 
-    @ExceptionHandler(AccessDeniedException::class)
-    fun handleException(
-        ex: AccessDeniedException,
-        request: HttpServletRequest,
-    ): ResponseEntity<HuzaErrorResponse> {
-        logHandledException(ex, request)
-
-        val response = HuzaErrorResponse(
-            message = ex.message ?: ex::class.java.name,
-        )
-
-        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(response)
-    }
-
     @ExceptionHandler(RuntimeException::class)
     fun handleException(
         ex: RuntimeException,
         request: HttpServletRequest,
     ): ResponseEntity<HuzaErrorResponse> {
-        logHandledException(ex, request)
+        logger.error(ex) { "Handled exception during HTTP request" }
 
         val response = HuzaErrorResponse(
             message = ex.message ?: ex::class.java.name,
         )
 
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response)
-    }
-
-    private fun logHandledException(ex: Exception, request: HttpServletRequest) {
-        logger.error(ex) { "Handled [${ex::class.java.simpleName}] during HTTP request" }
     }
 }

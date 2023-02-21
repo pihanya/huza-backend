@@ -2,8 +2,6 @@ package ru.huza.api.controller
 
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
-import org.springframework.security.access.annotation.Secured
-import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.security.oauth2.jwt.Jwt
 import org.springframework.web.bind.annotation.DeleteMapping
@@ -35,7 +33,6 @@ class UserController {
 
     @PostMapping
     @ResponseStatus(code = HttpStatus.CREATED)
-    @PreAuthorize("hasAuthority('SCOPE_admin') or hasAuthority('SCOPE_owner')")
     fun createUser(
         @RequestBody model: UserSaveModel,
 //        @AuthenticationPrincipal authentication: UserDetails
@@ -50,7 +47,6 @@ class UserController {
     ): UserDto = userService.findById(id)
 
     @PostMapping(path = ["/{id}"])
-    @PreAuthorize("hasAuthority('SCOPE_admin') or hasAuthority('SCOPE_owner')")
     fun updateUserById(
         @PathVariable("id") id: Long,
         @RequestBody model: UserSaveModel,
@@ -58,14 +54,12 @@ class UserController {
     ): UserDto = userService.updateById(id, model)
 
     @PatchMapping(path = ["{id}"])
-    @PreAuthorize("hasAuthority('SCOPE_admin') or hasAuthority('SCOPE_owner')")
     fun patchUserById(
         @PathVariable("id") id: Long,
         @RequestBody model: UserPatchModel,
     ): UserDto = userService.patchById(id = id, model = model)
 
     @DeleteMapping(path = ["/{id}"])
-    @PreAuthorize("hasAuthority('SCOPE_admin') or hasAuthority('SCOPE_owner')")
     fun deleteUserById(
         @PathVariable("id") id: Long,
 //        @AuthenticationPrincipal authentication: UserDetails,

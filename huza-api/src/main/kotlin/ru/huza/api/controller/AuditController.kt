@@ -11,7 +11,6 @@ import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.jdbc.core.RowMapper
-import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
@@ -21,7 +20,6 @@ import ru.huza.core.model.dto.AssetAuditRecord
 
 @RestController
 @RequestMapping(path = ["/audit"])
-@PreAuthorize("hasAuthority('SCOPE_admin')")
 class AuditController {
 
     @set:Autowired
