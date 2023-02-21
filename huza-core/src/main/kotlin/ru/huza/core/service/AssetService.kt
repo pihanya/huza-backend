@@ -18,6 +18,8 @@ interface AssetService {
 
     fun findByFilter(filter: AssetFilter): List<AssetDto>
 
+    fun removeById(id: Long): Boolean
+
     data class AssetFilter(
 
         val code: String? = null,

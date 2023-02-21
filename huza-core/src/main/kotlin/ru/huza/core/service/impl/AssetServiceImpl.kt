@@ -77,6 +77,12 @@ class AssetServiceImpl : AssetService {
             },
         ).map(::toDto)
 
+    override fun removeById(id: Long): Boolean {
+        assetDao.findByIdOrNull(id) ?: return false
+        assetDao.deleteById(id)
+        return true
+    }
+
     private fun toDto(entity: Asset): AssetDto = AssetDto(
         id = entity.id,
         assetDef = entity.assetDef!!.toDto(),
