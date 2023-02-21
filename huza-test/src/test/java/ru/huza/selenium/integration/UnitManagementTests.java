@@ -86,7 +86,7 @@ public class UnitManagementTests extends SeleniumTestBase {
         js.executeScript("arguments[0].scrollIntoView(true);", ele);
         warriorHomePage.waitUntilButtonLoaded(unitRows.size(), warriorHomePage.getDeleteButton());
         warriorHomePage.getDeleteButton().click();
-
-        //Assertions.assertEquals(warriorHomePage.getUnitRows().size(), expectedRowsCount); //todo: uncomment when it will work =)
+        this.get("/home");
+        Assertions.assertEquals(warriorHomePage.getUnitRows().size(), expectedRowsCount);
     }
 }

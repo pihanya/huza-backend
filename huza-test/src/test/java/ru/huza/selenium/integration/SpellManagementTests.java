@@ -67,7 +67,7 @@ public class SpellManagementTests extends SeleniumTestBase {
         js.executeScript("arguments[0].scrollIntoView(true);", ele);
         wizardHomePage.waitUntilDeleteButtonLoaded(spellRows.size());
         wizardHomePage.getDeleteButton().click();
-
-        //Assertions.assertEquals(wizardHomePage.getSpellRows().size(), expectedRowsCount); //todo: uncomment when it will work =)
+        this.get("/home");
+        Assertions.assertEquals(wizardHomePage.getSpellRows().size(), expectedRowsCount);
     }
 }
