@@ -15,7 +15,7 @@ import java.util.List;
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class BuildOrderTests extends SeleniumTestBase {
     @Test
-    public void test() {
+    public void test() throws InterruptedException {
         this.driver.get(this.composeUrl("/"));
 
         final String ownerEmail = "owner@itmo.ru", ownerPass = "password";
@@ -30,22 +30,22 @@ public class BuildOrderTests extends SeleniumTestBase {
         final var buildOrdersPage = this.initPage(BuildOrdersPage.class);
         final int expectedRowsCount = buildOrdersPage.getBuildOrderRows().size() + 3;
 
-        String assetDefsPageUrl = driver.getCurrentUrl();
+        String buildOrdersPageUrl = driver.getCurrentUrl();
         buildOrdersPage.getAddBuildOrderButton().click();
-        this.redirectWait(assetDefsPageUrl);
+        this.redirectWait(buildOrdersPageUrl);
 
         boolean headOrder = true;
         String buildingType = "Ратуша", comment = "Очень срочно нужно!";
         this.createBuildOrder(headOrder, buildingType, comment);
 
         buildOrdersPage.getAddBuildOrderButton().click();
-        this.redirectWait(assetDefsPageUrl);
+        this.redirectWait(buildOrdersPageUrl);
         buildingType = "Таверна";
         comment = "Еще срочнее нужно!";
         this.createBuildOrder(headOrder, buildingType, comment);
 
         buildOrdersPage.getAddBuildOrderButton().click();
-        this.redirectWait(assetDefsPageUrl);
+        this.redirectWait(buildOrdersPageUrl);
         headOrder = false;
         buildingType = "Магистрат";
         comment = "Это не очень нужно!";
@@ -62,12 +62,20 @@ public class BuildOrderTests extends SeleniumTestBase {
         this.get("/home");
         final var builderHomePage = this.initPage(BuilderHomePage.class);
         String builderHomePageUrl = driver.getCurrentUrl();
+        builderHomePage.waitUntilGetButtonLoaded();
+
         builderHomePage.getGetBuildOrderButton().click();
         this.redirectWait(builderHomePageUrl);
-        this.acceptBuildOrder();
+        String buildOrderPageUrl = driver.getCurrentUrl();
+        var buildOrderPage = this.initPage(BuildOrderPage.class);
+        buildOrderPage.getAcceptBuildOrderButton().click();
+        this.redirectWait(buildOrderPageUrl);
+
 //        builderHomePage.getGetBuildOrderButton().click();
 //        this.redirectWait(builderHomePageUrl);
-//        this.denyBuildOrder();
+//        buildOrderPageUrl = driver.getCurrentUrl();
+//        buildOrderPage.getDenyBuildOrderButton().click();
+//        this.redirectWait(buildOrderPageUrl);
 
         buildOrderRows = buildOrdersPage.getBuildOrderRows();
         BuildOrderRow buildOrderRow1 = buildOrderRows.stream()
@@ -82,6 +90,6 @@ public class BuildOrderTests extends SeleniumTestBase {
         Assertions.assertNotNull(buildOrderRow1);
         Assertions.assertNotNull(buildOrderRow2);
         Assertions.assertEquals(buildOrderRow1.getStatus(), "В процессе");
-        Assertions.assertEquals(buildOrderRow1.getStatus(), "Создан");
+        Assertions.assertEquals(buildOrderRow2.getStatus(), "Создан");
     }
 }

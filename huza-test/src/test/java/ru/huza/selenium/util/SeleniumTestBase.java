@@ -173,19 +173,6 @@ public abstract class SeleniumTestBase {
         this.redirectWait(newBuildOrderPageUrl);
     }
 
-    protected void acceptBuildOrder() {
-        String buildOrderPageUrl = driver.getCurrentUrl();
-        var buildOrderPage = this.initPage(BuildOrderPage.class);
-        buildOrderPage.getAcceptBuildOrderButton().click();
-        this.redirectWait(buildOrderPageUrl);
-    }
-
-    protected void denyBuildOrder() {
-        String buildOrderPageUrl = driver.getCurrentUrl();
-        var buildOrderPage = this.initPage(BuildOrderPage.class);
-        buildOrderPage.getDenyBuildOrderButton().click();
-        this.redirectWait(buildOrderPageUrl);
-    }
     protected void logout() {
         driver.findElement(By.xpath("//a[contains(text(),'Выйти')]")).click();
     }
