@@ -7,6 +7,7 @@ fun AssetDef.toLink(): AssetDefLink = AssetDefLink(
     type = this.type!!,
     code = this.code!!,
     name = this.name!!,
+    description = this.description!!,
     imgOrigUrl = this.imgOrigUrl!!,
 )
 
@@ -15,6 +16,7 @@ fun AssetDefDto.toLink(): AssetDefLink = AssetDefLink(
     type = this.type,
     code = this.code,
     name = this.name,
+    description = this.description,
     imgOrigUrl = this.imgOrigUrl,
 )
 
@@ -23,5 +25,6 @@ data class AssetDefLink(
     val type: String,
     val code: String,
     val name: String,
+    val description: String?,
     val imgOrigUrl: String,
 )
