@@ -1,0 +1,37 @@
+huza:
+  api-url: 'http://localhost:4242/api/'
+  file-storage-path: .temp/2023-02-14/tmp.2023-02-14-05-16-53/huza-files
+  owner-role-name: owner
+
+server:
+  port: 4242
+  servlet.context-path: '/api'
+
+spring:
+  application:
+    name: huza
+  datasource:
+    name: 'huza-datasource'
+    driver-class-name: 'org.postgresql.Driver'
+    url: 'jdbc:postgresql://localhost:5432/huza'
+    username: 'huza'
+    password: 'huza'
+
+  jpa:
+    generate-ddl: true
+    hibernate.ddl-auto: create-drop
+
+jwt:
+  private-key: 'key.pem'
+  public-key: 'cert.pem'
+  type: 'JWT'
+  issuer: 'ITMO 160RXTX Team'
+  audience: '160RXTX Backend'
+
+management:
+  endpoints:
+    web:
+      base-path: '/actuator'
+      exposure.include: '*'
+
+
