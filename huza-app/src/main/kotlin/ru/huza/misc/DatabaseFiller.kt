@@ -121,6 +121,7 @@ class DatabaseFiller(
                 name = "Архангел",
                 description = "Позволяет нанимать героев, а также повышает боевой дух войск гарнизона на 1 ед",
                 imgOrigUrl = "https://www.meme-arsenal.com/memes/f617aa0a967ad16f1c96627b6c66d59b.jpg",
+                fraction = "Замок",
                 level = 7,
             ),
         )
