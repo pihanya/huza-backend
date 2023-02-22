@@ -10,13 +10,14 @@ import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.ResponseStatus
 import org.springframework.web.bind.annotation.RestController
+import ru.huza.api.HttpEndpoints
 import ru.huza.core.model.dto.BuildOrderDto
 import ru.huza.core.model.request.BuildOrderCreateRequest
 import ru.huza.core.model.request.BuildOrderSetStatusRequest
 import ru.huza.core.service.BuildOrderService
 
 @RestController
-@RequestMapping(path = ["/build-orders"])
+@RequestMapping(path = [HttpEndpoints.BUILD_ORDERS])
 @PreAuthorize("hasAuthority('SCOPE_owner') or hasAuthority('SCOPE_builder')")
 class BuildOrderController {
 

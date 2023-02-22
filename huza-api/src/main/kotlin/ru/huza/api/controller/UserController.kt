@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.ResponseStatus
 import org.springframework.web.bind.annotation.RestController
+import ru.huza.api.HttpEndpoints
 import ru.huza.core.model.dto.AssetDto
 import ru.huza.core.model.dto.UserDto
 import ru.huza.core.model.dto.UserPatchModel
@@ -22,7 +23,7 @@ import ru.huza.core.model.dto.UserSaveModel
 import ru.huza.core.service.UserService
 
 @RestController
-@RequestMapping(path = ["/users"])
+@RequestMapping(path = [HttpEndpoints.USERS])
 class UserController {
 
     @set:Autowired

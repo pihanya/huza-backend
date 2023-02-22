@@ -34,6 +34,7 @@ import org.springframework.security.oauth2.jwt.NimbusJwtEncoder
 import org.springframework.security.web.SecurityFilterChain
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher.antMatcher
 import org.springframework.web.cors.CorsConfiguration
+import ru.huza.api.HttpEndpoints
 import ru.huza.api.security.JwtAuthenticationEntryPoint
 import ru.huza.core.service.UserService
 
@@ -71,26 +72,22 @@ class SecurityConfig {
 
     @Bean
     fun filterChain(http: HttpSecurity): SecurityFilterChain {
-        val mutationMethods = listOf(HttpMethod.POST, HttpMethod.PUT, HttpMethod.PATCH, HttpMethod.DELETE)
-
         // @formatter:off
         http
             .authorizeHttpRequests { authorize ->
                 authorize
                     .requestMatchers(
-                        // antMatcher("/"),
+                        antMatcher(HttpMethod.GET, "/*"),
+                        antMatcher(HttpMethod.GET, "/static/**"),
                         antMatcher(HttpMethod.OPTIONS, "**"),
-                        // antMatcher(HttpMethod.POST, "/auth/**"),
-                        antMatcher("/auth/login"),
-                        antMatcher("/auth/info"),
-                        antMatcher("/files/download/**")
-                        // antMatcher("/asset-defs/**"),
-                        // antMatcher("/build-orders/**"),
-                        // antMatcher("/assets/**"),
-                        // antMatcher("/users/**"),
+                        antMatcher("${HttpEndpoints.AUTH}/login"),
+                        antMatcher("${HttpEndpoints.AUTH}/info"),
+                        antMatcher("${HttpEndpoints.FILES}/download/**"),
                     ).permitAll()
-                    //.requestMatchers(*mutationMethods.map { antMatcher(it, "auth/**") }.toTypedArray()).hasRole("ADMIN")
-                    //.requestMatchers(antMatcher("/actuator/**")).hasRole("ADMIN")
+                    .requestMatchers(
+                        antMatcher(HttpEndpoints.ACTUATOR),
+                        antMatcher("${HttpEndpoints.ACTUATOR}/**"),
+                    ).hasAuthority("SCOPE_admin")
                     .anyRequest().authenticated()
             }
             .csrf().disable()

@@ -1,6 +1,6 @@
 server:
   port: 4242
-  servlet.context-path: '/api'
+  servlet.context-path: '/'
 
 huza:
   owner-role-name: owner
@@ -9,8 +9,11 @@ spring:
   application:
     name: huza
 
+  web.resources.static-locations: 'classpath:/static/'
+  mvc.static-path-pattern: '/**'
+
 management:
   endpoints:
     web:
-      base-path: '/actuator'
+      base-path: '/api/actuator'
       exposure.include: '*'

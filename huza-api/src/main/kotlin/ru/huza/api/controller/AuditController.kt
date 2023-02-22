@@ -16,11 +16,12 @@ import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
+import ru.huza.api.HttpEndpoints
 import ru.huza.api.model.request.CreateAuditReportRequest
 import ru.huza.core.model.dto.AssetAuditRecord
 
 @RestController
-@RequestMapping(path = ["/audit"])
+@RequestMapping(path = [HttpEndpoints.AUDIT])
 @PreAuthorize("hasAuthority('SCOPE_admin')")
 class AuditController {
 

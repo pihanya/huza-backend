@@ -11,13 +11,14 @@ import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.ResponseStatus
 import org.springframework.web.bind.annotation.RestController
+import ru.huza.api.HttpEndpoints
 import ru.huza.core.model.dto.AssetDto
 import ru.huza.core.model.dto.AssetPatchModel
 import ru.huza.core.model.dto.AssetSaveModel
 import ru.huza.core.service.AssetService
 
 @RestController
-@RequestMapping(path = ["/assets"])
+@RequestMapping(path = [HttpEndpoints.ASSETS])
 class AssetController {
 
     @set:Autowired

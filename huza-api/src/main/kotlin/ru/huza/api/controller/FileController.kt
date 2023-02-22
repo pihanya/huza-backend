@@ -15,12 +15,13 @@ import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.ResponseStatus
 import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.multipart.MultipartFile
+import ru.huza.api.HttpEndpoints
 import ru.huza.core.model.dto.FileDto
 import ru.huza.core.model.dto.FileSaveModel
 import ru.huza.core.service.FileService
 
 @RestController
-@RequestMapping(path = ["/files"])
+@RequestMapping(path = [HttpEndpoints.FILES])
 class FileController {
 
     @set:Autowired

@@ -11,13 +11,14 @@ import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.ResponseStatus
 import org.springframework.web.bind.annotation.RestController
+import ru.huza.api.HttpEndpoints
 import ru.huza.core.model.dto.AssetDefSaveModel
 import ru.huza.core.model.dto.AssetDefDto
 import ru.huza.core.model.dto.AssetDefPatchModel
 import ru.huza.core.service.AssetDefService
 
 @RestController
-@RequestMapping(path = ["/asset-defs"])
+@RequestMapping(path = [HttpEndpoints.ASSET_DEFS])
 class AssetDefController {
 
     @set:Autowired

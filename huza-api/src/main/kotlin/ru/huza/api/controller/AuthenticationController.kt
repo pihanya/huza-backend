@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestHeader
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
+import ru.huza.api.HttpEndpoints
 import ru.huza.api.model.request.AuthRequest
 import ru.huza.api.model.response.AuthInfoResponse
 import ru.huza.api.model.response.AuthResponse
@@ -28,7 +29,7 @@ import ru.huza.core.service.UserService
 private val logger = KotlinLogging.logger {}
 
 @RestController
-@RequestMapping(path = ["/auth"])
+@RequestMapping(path = [HttpEndpoints.AUTH])
 class AuthenticationController {
 
     @set:Autowired
