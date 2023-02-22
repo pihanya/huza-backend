@@ -48,4 +48,16 @@ class BuildOrderController {
         @RequestBody request: BuildOrderSetStatusRequest
         // @AuthenticationPrincipal authentication: UserDetails
     ): BuildOrderDto = buildOrderService.setStatus(id, request)
+
+    @PostMapping(path = ["/{id}/increase-priority"])
+    fun increaseBuildOrderPriority(
+        @PathVariable("id") id: Long,
+        // @AuthenticationPrincipal authentication: UserDetails
+    ): BuildOrderDto = buildOrderService.increasePriority(id)
+
+    @PostMapping(path = ["/{id}/decrease-priority"])
+    fun decreaseBuildOrderPriority(
+        @PathVariable("id") id: Long,
+        // @AuthenticationPrincipal authentication: UserDetails
+    ): BuildOrderDto = buildOrderService.decreasePriority(id)
 }

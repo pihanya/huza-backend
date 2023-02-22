@@ -104,6 +104,66 @@ class BuildOrderServiceImpl @Autowired constructor(
         return toDto(updatedEntity)
     }
 
+    @Transactional
+    override fun increasePriority(id: Long): BuildOrderDto {
+        val allOrders = findAllSorted()
+
+        data class OrderWithNewOrdinal(val entity: BuildOrderDto, val newOrdinal: Long)
+
+        var currentCtr = MIN_ORDINAL
+        val newOrdinals = mutableListOf<OrderWithNewOrdinal>()
+        for (order in allOrders) {
+            newOrdinals += OrderWithNewOrdinal(order, newOrdinal = currentCtr++)
+        }
+
+        val idx = newOrdinals.indexOfFirst { (order, _) -> order.id == id }
+        check(idx != -1) { "Couldn't find order with id [$id]" }
+        if (idx == 0) return newOrdinals[idx].entity // Already max priority
+
+        val (currentOrdinal, increasedOrdinal) = newOrdinals[idx].newOrdinal to newOrdinals[idx - 1].newOrdinal
+        newOrdinals[idx] = newOrdinals[idx].copy(newOrdinal = increasedOrdinal)
+        newOrdinals[idx - 1] = newOrdinals[idx - 1].copy(newOrdinal = currentOrdinal)
+
+        for ((entity, newOrdinal) in newOrdinals) {
+            setOrdinal(id = entity.id!!, ordinal = newOrdinal)
+        }
+
+        return findById(id)
+    }
+
+    @Transactional
+    override fun decreasePriority(id: Long): BuildOrderDto {
+        val allOrders = findAllSorted()
+
+        data class OrderWithNewOrdinal(val entity: BuildOrderDto, val newOrdinal: Long)
+
+        var currentCtr = MIN_ORDINAL
+        val newOrdinals = mutableListOf<OrderWithNewOrdinal>()
+        for (order in allOrders) {
+            newOrdinals += OrderWithNewOrdinal(order, newOrdinal = currentCtr++)
+        }
+
+        val idx = newOrdinals.indexOfFirst { (order, _) -> order.id == id }
+        check(idx != -1) { "Couldn't find order with id [$id]" }
+        if (idx == newOrdinals.size - 1) return newOrdinals[idx].entity // Already min priority
+
+        val (currentOrdinal, decreasedOrdinal) = newOrdinals[idx].newOrdinal to newOrdinals[idx + 1].newOrdinal
+        newOrdinals[idx] = newOrdinals[idx].copy(newOrdinal = decreasedOrdinal)
+        newOrdinals[idx + 1] = newOrdinals[idx + 1].copy(newOrdinal = currentOrdinal)
+
+        for ((entity, newOrdinal) in newOrdinals) {
+            setOrdinal(id = entity.id!!, ordinal = newOrdinal)
+        }
+
+        return findById(id)
+    }
+
+    private fun setOrdinal(id: Long, ordinal: Long) {
+        val entity = checkNotNull(buildOrderDao.findByIdOrNull(id))
+        entity.ordinal = ordinal
+        buildOrderDao.save(entity)
+    }
+
     private fun checkTransitionPossible(
         entity: BuildOrder,
         toStatus: BuildOrderStatus,

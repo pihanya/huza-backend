@@ -15,4 +15,8 @@ interface BuildOrderService {
     fun findById(id: Long): BuildOrderDto
 
     fun setStatus(id: Long, request: BuildOrderSetStatusRequest): BuildOrderDto
+
+    fun increasePriority(id: Long): BuildOrderDto
+
+    fun decreasePriority(id: Long): BuildOrderDto
 }
