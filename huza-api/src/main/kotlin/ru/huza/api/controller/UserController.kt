@@ -5,6 +5,7 @@ import org.springframework.http.HttpStatus
 import org.springframework.security.access.annotation.Secured
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.security.core.annotation.AuthenticationPrincipal
+import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.security.oauth2.jwt.Jwt
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
@@ -29,6 +30,9 @@ class UserController {
     @set:Autowired
     lateinit var userService: UserService
 
+    @set:Autowired
+    lateinit var passwordEncoder: PasswordEncoder
+
     @GetMapping
     fun findAllUsers(
         @AuthenticationPrincipal authentication: Jwt
@@ -41,7 +45,7 @@ class UserController {
         @RequestBody model: UserSaveModel,
 //        @AuthenticationPrincipal authentication: UserDetails
     ): UserDto {
-        return userService.create(model = model)
+        return userService.create(model = model.copy(password = passwordEncoder.encode(model.password)))
     }
 
     @GetMapping(path = ["/{id}"])
