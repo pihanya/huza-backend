@@ -5,8 +5,8 @@ import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import ru.huza.core.exception.NotFoundException
-import ru.huza.core.model.dto.AssetDefDto
 import ru.huza.core.model.dto.AssetDefDto.CostElement
+import ru.huza.core.model.dto.AssetPatchModel
 import ru.huza.core.model.dto.BuildOrderDto
 import ru.huza.core.model.dto.toLink
 import ru.huza.core.model.request.BuildOrderCreateRequest
@@ -88,6 +88,11 @@ class BuildOrderServiceImpl @Autowired constructor(
 
         checkTransitionPossible(entity, toStatus = request.status)
 
+        // Withdraw cost if transition into "IN_PROGRESS"
+        if (entity.status == BuildOrderStatus.CREATED && request.status == BuildOrderStatus.IN_PROGRESS) {
+            withdrawCost(entity)
+        }
+
         entity.apply {
             this.status = request.status
             if (isTerminalStatus(request.status)) {
@@ -144,7 +149,7 @@ class BuildOrderServiceImpl @Autowired constructor(
                 val costAssetByAssetDefCode = costAssets.associateBy { ass -> ass.assetDef.code }
 
                 val missingAmountByResAssetDefCode = mutableMapOf<String, Int>()
-                for ((assetDefCode, cost) in costByAssetDefCode) {
+                for ((assetDefCode, cost: CostElement) in costByAssetDefCode) {
                     val costAsset = costAssetByAssetDefCode[assetDefCode]
                     val costAssetQuantity: Int = costAsset?.quantity?.toInt() ?: 0
                     if (costAssetQuantity < cost.count) {
@@ -165,6 +170,26 @@ class BuildOrderServiceImpl @Autowired constructor(
                     )
                 }
             }
+        }
+    }
+
+    fun withdrawCost(entity: BuildOrder) {
+        val assetDefId = checkNotNull(entity.assetDef?.id)
+        val assetDef = assetDefService.findById(assetDefId)
+
+        val costs = assetDef.cost
+        if (costs.isEmpty()) return
+
+        val costAssets = costs.map(CostElement::assetDefCode)
+            .flatMap { code -> assetService.findByFilter(AssetFilter(assetDefCode = code)) }
+
+        val costByAssetDefCode = costs.associateBy(CostElement::assetDefCode)
+        val costAssetByAssetDefCode = costAssets.associateBy { ass -> ass.assetDef.code }
+
+        for ((assetDefCode, cost: CostElement) in costByAssetDefCode) {
+            val costAsset = costAssetByAssetDefCode.getValue(assetDefCode)
+            val newQuantity = costAsset.quantity - cost.count.toLong()
+            assetService.patchById(id = costAsset.id!!, model = AssetPatchModel(quantity = newQuantity))
         }
     }
 
