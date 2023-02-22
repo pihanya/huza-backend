@@ -35,6 +35,7 @@ cat >$DEPLOY_TEMP_DIR/run.sh <<EOF
 java -jar huza.jar \\
     --server.port=$HUZA_PORT \\
     --spring.profiles.active=dev \\
+    --spring.jpa.hibernate.ddl-auto=update \\
     --spring.datasource.url=jdbc:postgresql://pg:5432/studs \\
     --spring.datasource.username=$HELIOS_USER \\
     --spring.datasource.password= \\
