@@ -29,6 +29,7 @@ kotlin = "1.8.10" # https://github.com/JetBrains/kotlin
 java = "17" # https://github.com/adoptium/jdk
 
 jdbcDrivers-postgresql = "42.5.4" # Postgresql JDBC Driver | https://github.com/pgjdbc/pgjdbc
+jdbcDrivers-h2 = "2.1.214" # H2 JDBC Driver | https://h2database.com/html/main.html
 
 mockk = "1.13.4" # https://github.com/mockk/mockk
 kotest = "5.5.5" # https://github.com/kotest/kotest
@@ -138,6 +139,7 @@ log4j2-jul = { module = "org.apache.logging.log4j:log4j-jul", version.ref = "log
 log4j2-api = { module = "org.apache.logging.log4j:log4j-api", version.ref = "log4j2" }
 
 jdbcDrivers-postgresql = { module = "org.postgresql:postgresql", version.ref = "jdbcDrivers-postgresql" }
+jdbcDrivers-h2 = { module = "com.h2database:h2", version.ref = "jdbcDrivers-h2" }
 
 mockk = { module = "io.mockk:mockk", version.ref = "mockk" }
 
