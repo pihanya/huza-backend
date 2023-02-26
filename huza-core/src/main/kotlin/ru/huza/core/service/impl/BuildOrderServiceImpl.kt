@@ -26,16 +26,9 @@ import ru.huza.data.model.enum.BuildOrderStatus
 class BuildOrderServiceImpl @Autowired constructor(
     private val assetDefService: AssetDefService,
     private val assetService: AssetService,
+    private val buildOrderDao: BuildOrderDao,
+    private val assetDefDao: AssetDefDao,
 ) : BuildOrderService {
-
-    @set:Autowired
-    lateinit var buildOrderDao: BuildOrderDao
-
-    @set:Autowired
-    lateinit var assetDefDao: AssetDefDao
-
-    @set:Autowired
-    lateinit var assetDao: AssetDao
 
     @Transactional
     override fun createNew(request: BuildOrderCreateRequest): BuildOrderDto {
