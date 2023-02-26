@@ -1,6 +1,8 @@
 package ru.huza.huza
 
-import org.junit.jupiter.api.Test
+import io.kotest.core.extensions.Extension
+import io.kotest.core.spec.style.FunSpec
+import io.kotest.extensions.spring.SpringExtension
 import org.springframework.boot.test.context.SpringBootTest
 
 @SpringBootTest(
@@ -16,8 +18,13 @@ import org.springframework.boot.test.context.SpringBootTest
     ],
     webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
 )
-class HuzaApplicationStartupTest {
+class HuzaApplicationStartupTest : FunSpec() {
 
-    @Test
-    fun contextLoads(): Unit = Unit
+    override fun extensions(): List<Extension> = listOf(SpringExtension)
+
+    init {
+        test("HuzaApplication startup test") {
+            // Nothing to do
+        }
+    }
 }

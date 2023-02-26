@@ -33,6 +33,7 @@ jdbcDrivers-h2 = "2.1.214" # H2 JDBC Driver | https://h2database.com/html/main.h
 
 mockk = "1.13.4" # https://github.com/mockk/mockk
 kotest = "5.5.5" # https://github.com/kotest/kotest
+kotestExtensions-spring = "1.1.2" # https://kotest.io/docs/extensions/spring.html
 junitJupiter = "5.9.2" # https://github.com/junit-team/junit5
 
 ## Plugin Versions ##
@@ -151,6 +152,8 @@ kotest-runnerJunit5 = { module = "io.kotest:kotest-runner-junit5", version.ref =
 kotest-property = { module = "io.kotest:kotest-property", version.ref = "kotest" }
 kotest-frameworkDatatest = { module = "io.kotest:kotest-framework-datatest", version.ref = "kotest" }
 
+kotestExtensions-spring = { module = "io.kotest.extensions:kotest-extensions-spring", version.ref = "kotestExtensions-spring" }
+
 spring-boot-starter-test = { module = "org.springframework.boot:spring-boot-starter-test", version.ref = "spring-boot" }
 spring-security-test = { module = "org.springframework.security:spring-security-test", version.ref = "spring-security" }
 
@@ -171,6 +174,11 @@ gradlePlugins-kotlin-pluginApi = { module = "org.jetbrains.kotlin:kotlin-gradle-
 
 [bundles]
 kotlin = ["kotlin-reflect", "kotlin-stdlib", "kotlin-stdlib-jdk8", "kotlinLogging-jvm"]
+kotest = [
+    "kotest-assertionsCore", "kotest-runnerJunit5",
+    "kotest-property", "kotest-frameworkDatatest",
+    "kotestExtensions-spring",
+]
 
 [plugins]
 springBoot = { id = "org.springframework.boot", version.ref = "spring-boot" } # https://plugins.gradle.org/plugin/org.springframework.boot
