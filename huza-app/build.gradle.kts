@@ -21,6 +21,8 @@ dependencies {
 
     testImplementation(libs.spring.boot.starter.test)
     testImplementation(libs.spring.security.test)
+    testImplementation(libs.jdbcDrivers.h2)
+
 
     add("developmentOnly", libs.spring.boot.devtools)
     annotationProcessor(libs.spring.boot.configurationProcessor)

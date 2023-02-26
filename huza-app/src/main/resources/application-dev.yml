@@ -16,13 +16,6 @@ spring:
     hibernate.ddl-auto: create-drop
     database-platform: org.hibernate.dialect.PostgreSQLDialect
 
-#  security:
-#    oauth2:
-#      resourceserver:
-#        jwt:
-#          issuer-uri: http://localhost:4242/api/auth/realms/huza
-#          jwk-set-uri: http://localhost:4242/api/auth/realms/huza/protocol/openid-connect/certs
-
 logging:
   level:
     org.springframework.security: DEBUG
