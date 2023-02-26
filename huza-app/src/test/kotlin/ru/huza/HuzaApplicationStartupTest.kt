@@ -1,4 +1,4 @@
-package ru.huza.huza
+package ru.huza
 
 import io.kotest.core.extensions.Extension
 import io.kotest.core.spec.style.FunSpec
