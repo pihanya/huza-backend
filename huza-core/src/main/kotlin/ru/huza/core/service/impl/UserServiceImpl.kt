@@ -1,5 +1,6 @@
 package ru.huza.core.service.impl
 
+import java.time.Clock
 import java.time.LocalDateTime
 import mu.KotlinLogging
 import org.springframework.beans.factory.annotation.Autowired
@@ -20,17 +21,15 @@ import ru.huza.data.entity.User
 private val logger = KotlinLogging.logger {}
 
 @Service
-class UserServiceImpl : UserService {
+class UserServiceImpl @Autowired constructor(
+    @Value("\${huza.owner-role-name}") private val ownerRoleName: String,
+    private val clock: Clock,
+    private val userDao: UserDao,
+) : UserService {
 
-    @set:Autowired
-    lateinit var userDao: UserDao
-
-    @Value("\${huza.owner-role-name}")
-    lateinit var ownerRoleName: String
-    
     @Transactional
     override fun create(model: UserSaveModel): UserDto {
-        val now = LocalDateTime.now()
+        val now = LocalDateTime.now(clock)
 
         val entityToSave = fillFromSaveModel(existingEntity = null, saveModel = model, now = now)
         return userDao.save(entityToSave).let(::toDto)
@@ -38,7 +37,7 @@ class UserServiceImpl : UserService {
 
     @Transactional
     override fun updateById(id: Long, model: UserSaveModel): UserDto {
-        val now = LocalDateTime.now()
+        val now = LocalDateTime.now(clock)
 
         val existingEntity = userDao.findByIdOrNull(id)
         check(existingEntity != null) { "Asset with id [$id] does not exist" }
@@ -49,7 +48,7 @@ class UserServiceImpl : UserService {
 
     @Transactional
     override fun patchById(id: Long, model: UserPatchModel): UserDto {
-        val now = LocalDateTime.now()
+        val now = LocalDateTime.now(clock)
 
         val existingEntity = userDao.findByIdOrNull(id)
         check(existingEntity != null) { "Asset with id [$id] does not exist" }
@@ -85,7 +84,7 @@ class UserServiceImpl : UserService {
     }
 
     override fun trackAuth(id: Long) {
-        val now = LocalDateTime.now()
+        val now = LocalDateTime.now(clock)
 
         val existingEntity = userDao.findByIdOrNull(id)
             ?.apply { this.authDate = now }
@@ -97,21 +96,21 @@ class UserServiceImpl : UserService {
 
     @Transactional
     override fun loadUserByUsername(username: String): UserDto {
-        val foundUser = findByUsernameOrEmail(username)
+        val foundUser = findByLogin(username)
         return toDto(foundUser)
     }
 
     @Transactional
     override fun updatePassword(user: UserDetails, newPassword: String): UserDto {
-        val foundUser = findByUsernameOrEmail(user.username)
+        val foundUser = findByLogin(user.username)
         return userDao.save(foundUser.apply { this.password = newPassword })
             .let(::toDto)
     }
 
-    private fun findByUsernameOrEmail(username: String) =
-        userDao.findByUsername(username)
-            ?: userDao.findByEmail(email = username)
-            ?: throw UsernameNotFoundException("User [$username] was not found")
+    private fun findByLogin(login: String): User =
+        userDao.findByUsername(login)
+            ?: userDao.findByEmail(email = login)
+            ?: throw UsernameNotFoundException("User by login [$login] was not found")
 
     private fun toDto(entity: User): UserDto =
         UserDto(
@@ -125,7 +124,7 @@ class UserServiceImpl : UserService {
         )
 
     private fun fillFromSaveModel(
-        existingEntity: User? = null,
+        existingEntity: User?,
         saveModel: UserSaveModel,
         now: LocalDateTime,
     ): User =

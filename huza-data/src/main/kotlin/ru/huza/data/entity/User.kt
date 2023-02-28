@@ -48,13 +48,14 @@ class User : BaseEntity {
 
     constructor()
 
-    constructor(entity: User): this() {
+    constructor(entity: User) : this() {
         this.id = entity.id
 
         this.username = entity.username
         this.email = entity.email
         this.password = entity.password
         this.role = entity.role
+        this.avatarUrl = entity.avatarUrl
         this.authDate = entity.authDate
 
         this.creationDate = entity.creationDate

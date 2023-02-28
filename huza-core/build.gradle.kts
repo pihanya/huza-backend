@@ -13,4 +13,6 @@ dependencies {
     implementation(libs.spring.tx)
 
     implementation(libs.jakarta.annotationApi)
+
+    testImplementation(libs.bundles.testing)
 }

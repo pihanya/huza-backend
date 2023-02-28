@@ -19,7 +19,7 @@ dependencies {
     implementation(libs.spring.boot.starter.actuator)
     implementation(libs.spring.boot.starter.data.jpa)
 
-    testImplementation(libs.bundles.kotest)
+    testImplementation(libs.bundles.testing)
     testImplementation(libs.spring.boot.starter.test)
     testImplementation(libs.spring.security.test)
     testImplementation(libs.jdbcDrivers.h2)

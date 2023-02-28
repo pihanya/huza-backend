@@ -174,10 +174,10 @@ gradlePlugins-kotlin-pluginApi = { module = "org.jetbrains.kotlin:kotlin-gradle-
 
 [bundles]
 kotlin = ["kotlin-reflect", "kotlin-stdlib", "kotlin-stdlib-jdk8", "kotlinLogging-jvm"]
-kotest = [
+testing = [
     "kotest-assertionsCore", "kotest-runnerJunit5",
     "kotest-property", "kotest-frameworkDatatest",
-    "kotestExtensions-spring",
+    "kotestExtensions-spring", "mockk",
 ]
 
 [plugins]
