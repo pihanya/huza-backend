@@ -28,6 +28,9 @@ public class BuilderHomePage {
     @FindBy(xpath = "//button[contains(text(),'Взять заказ на строительство')]")
     private WebElement getBuildOrderButton;
 
+    @FindBy(xpath = "//a[contains(text(),'База зданий')]")
+    private WebElement buildingsLink;
+
     public BuilderHomePage(WebDriver driver) {
         this.driver = driver;
     }

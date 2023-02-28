@@ -18,6 +18,9 @@ public class OwnerHomePage {
     @FindBy(xpath = "//div//*[contains(text(),'Ресурсы')]")
     private WebElement resourcesCard;
 
+    @FindBy(xpath = "//div//*[contains(text(),'Заклинания')]")
+    private WebElement spellsCard;
+
     @FindBy(xpath = "//div//*[contains(text(),'Здания')]")
     private WebElement buildingsCard;
 
