@@ -5,6 +5,7 @@ import org.hamcrest.CoreMatchers;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.function.Executable;
 import org.openqa.selenium.By;
+import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.support.PageFactory;
@@ -120,16 +121,15 @@ public abstract class SeleniumTestBase {
         return String.format("localhost:%d%s", this.port, relativeUrl);
     }
 
-    protected void authenticate(String email, String password) {
+    protected void authenticate(String email, String password) throws InterruptedException {
         String loginPageUrl;
         get("/login");
         loginPageUrl = driver.getCurrentUrl();
-
         var loginPage = PageFactory.initElements(driver, LoginPage.class);
         loginPage.getLoginEmailInput().sendKeys(email);
         loginPage.getLoginPasswordInput().sendKeys(password);
-
-        loginPage.getLoginButton().click();
+        loginPage.getLoginButton().submit();
+        //Thread.sleep(100000);
         redirectWait(loginPageUrl);
     }
 

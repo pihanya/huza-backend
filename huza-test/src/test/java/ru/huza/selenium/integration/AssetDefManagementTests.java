@@ -3,6 +3,8 @@ package ru.huza.selenium.integration;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
+import org.openqa.selenium.support.PageFactory;
+import org.springframework.test.context.jdbc.Sql;
 import ru.huza.selenium.pages.*;
 import ru.huza.selenium.util.SeleniumTest;
 import ru.huza.selenium.util.SeleniumTestBase;
@@ -12,8 +14,6 @@ import java.net.URISyntaxException;
 import java.util.List;
 
 @SeleniumTest
-//@Sql(value = {"/initScripts/create-admin.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
-//@Sql(value = {"/initScripts/delete-admin.sql"}, executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class AssetDefManagementTests extends SeleniumTestBase {
 
