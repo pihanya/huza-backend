@@ -7,6 +7,7 @@ import jakarta.persistence.GeneratedValue
 import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
 import jakarta.persistence.JoinColumn
+import jakarta.persistence.ManyToOne
 import jakarta.persistence.OneToOne
 import jakarta.persistence.SequenceGenerator
 import jakarta.persistence.Table
@@ -15,7 +16,7 @@ import ru.huza.data.model.enum.BuildOrderStatus
 
 @[Entity Audited]
 @Table(name = BuildOrder.TABLE_NAME)
-class BuildOrder : BaseEntity() {
+class BuildOrder : BaseEntity {
 
     private var id: Long? = null
 
@@ -29,12 +30,28 @@ class BuildOrder : BaseEntity() {
     var comment: String? = null
 
     @get:JoinColumn(name = "asset_def_id", nullable = false)
-    @get:OneToOne(fetch = FetchType.EAGER, optional = false)
+    @get:ManyToOne(fetch = FetchType.EAGER, optional = false)
     var assetDef: AssetDef? = null
 
     @get:JoinColumn(name = "created_asset_id")
     @get:OneToOne(fetch = FetchType.EAGER)
     var createdAsset: Asset? = null
+
+    constructor() : super()
+
+    constructor(entity: BuildOrder) : this() {
+        this.id = entity.id
+
+        this.status = entity.status
+        this.ordinal = entity.ordinal
+        this.comment = entity.comment
+        this.assetDef = entity.assetDef
+        this.createdAsset = entity.createdAsset
+
+        this.creationDate = entity.creationDate
+        this.auditDate = entity.auditDate
+        this.version = entity.version
+    }
 
     @Id
     @Column(name = "id", nullable = false)

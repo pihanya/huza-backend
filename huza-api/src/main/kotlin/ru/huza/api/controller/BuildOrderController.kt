@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.ResponseStatus
 import org.springframework.web.bind.annotation.RestController
 import ru.huza.api.HttpEndpoints
 import ru.huza.core.model.dto.BuildOrderDto
-import ru.huza.core.model.request.BuildOrderCreateRequest
+import ru.huza.core.model.request.BuildOrderSaveModel
 import ru.huza.core.model.request.BuildOrderSetStatusRequest
 import ru.huza.core.service.BuildOrderService
 
@@ -27,9 +27,9 @@ class BuildOrderController {
     @PostMapping("/create-new")
     @ResponseStatus(code = HttpStatus.CREATED)
     fun createBuildOrder(
-        @RequestBody request: BuildOrderCreateRequest
+        @RequestBody request: BuildOrderSaveModel
         // @AuthenticationPrincipal authentication: UserDetails
-    ): BuildOrderDto = buildOrderService.createNew(request)
+    ): BuildOrderDto = buildOrderService.create(request)
 
     @GetMapping
     fun findAllBuildOrders(

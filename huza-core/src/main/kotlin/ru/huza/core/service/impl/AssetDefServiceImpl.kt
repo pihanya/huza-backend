@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import ru.huza.core.exception.NotFoundException
 import ru.huza.core.model.dto.AssetDefDto
 import ru.huza.core.model.dto.AssetDefPatchModel
 import ru.huza.core.model.dto.AssetDefSaveModel
@@ -18,10 +19,9 @@ import ru.huza.data.dao.AssetDefDao
 import ru.huza.data.entity.AssetDef
 
 @Service
-class AssetDefServiceImpl : AssetDefService {
-
-    @set:Autowired
-    lateinit var assetDefDao: AssetDefDao
+class AssetDefServiceImpl @Autowired constructor(
+    private val assetDefDao: AssetDefDao
+) : AssetDefService {
 
     @Transactional
     override fun create(model: AssetDefSaveModel): AssetDefDto {
@@ -54,7 +54,8 @@ class AssetDefServiceImpl : AssetDefService {
     }
 
     override fun findById(id: Long): AssetDefDto =
-        assetDefDao.findById(id).map(AssetDef::toDto).orElseThrow()
+        assetDefDao.findByIdOrNull(id)?.let(AssetDef::toDto)
+            ?: throw NotFoundException("Asset Def with id [$id] does not exist")
 
     override fun findByCode(code: String): AssetDefDto? =
         assetDefDao.findByCode(code)?.let(AssetDef::toDto)

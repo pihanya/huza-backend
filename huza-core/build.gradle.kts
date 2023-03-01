@@ -14,5 +14,13 @@ dependencies {
 
     implementation(libs.jakarta.annotationApi)
 
+    testRuntimeOnly(libs.jdbcDrivers.postgresql)
+
     testImplementation(libs.bundles.testing)
+
+    testImplementation(libs.embeddedDatabase.springTest)
+    testImplementation(libs.embeddedDatabase.postgres)
+
+    testImplementation(libs.spring.boot.starter.test)
+    testImplementation(libs.spring.boot.starter.data.jpa)
 }
