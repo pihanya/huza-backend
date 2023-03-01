@@ -1,12 +1,12 @@
 package ru.huza.core.service
 
 import ru.huza.core.model.dto.BuildOrderDto
-import ru.huza.core.model.request.BuildOrderCreateRequest
+import ru.huza.core.model.request.BuildOrderSaveModel
 import ru.huza.core.model.request.BuildOrderSetStatusRequest
 
 interface BuildOrderService {
 
-    fun createNew(request: BuildOrderCreateRequest): BuildOrderDto
+    fun create(request: BuildOrderSaveModel): BuildOrderDto
 
     fun findAll(): List<BuildOrderDto>
 

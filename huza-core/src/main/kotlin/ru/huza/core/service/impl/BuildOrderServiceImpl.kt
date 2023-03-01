@@ -9,14 +9,13 @@ import ru.huza.core.model.dto.AssetDefDto.CostElement
 import ru.huza.core.model.dto.AssetPatchModel
 import ru.huza.core.model.dto.BuildOrderDto
 import ru.huza.core.model.dto.toLink
-import ru.huza.core.model.request.BuildOrderCreateRequest
+import ru.huza.core.model.request.BuildOrderSaveModel
 import ru.huza.core.model.request.BuildOrderSetStatusRequest
 import ru.huza.core.service.AssetDefService
 import ru.huza.core.service.AssetService
 import ru.huza.core.service.AssetService.AssetFilter
 import ru.huza.core.service.BuildOrderService
 import ru.huza.core.util.toDto
-import ru.huza.data.dao.AssetDao
 import ru.huza.data.dao.AssetDefDao
 import ru.huza.data.dao.BuildOrderDao
 import ru.huza.data.entity.BuildOrder
@@ -31,7 +30,7 @@ class BuildOrderServiceImpl @Autowired constructor(
 ) : BuildOrderService {
 
     @Transactional
-    override fun createNew(request: BuildOrderCreateRequest): BuildOrderDto {
+    override fun create(request: BuildOrderSaveModel): BuildOrderDto {
         val createdEntity = buildOrderDao.save(
             BuildOrder().apply {
                 this.id = null
@@ -72,7 +71,8 @@ class BuildOrderServiceImpl @Autowired constructor(
     }
 
     override fun findById(id: Long): BuildOrderDto =
-        buildOrderDao.findById(id).map(::toDto).orElseThrow()
+        buildOrderDao.findByIdOrNull(id)?.let(::toDto)
+            ?: throw NotFoundException("Build Order with id [$id] does not exist")
 
     @Transactional
     override fun setStatus(id: Long, request: BuildOrderSetStatusRequest): BuildOrderDto {
@@ -226,7 +226,7 @@ class BuildOrderServiceImpl @Autowired constructor(
         }
     }
 
-    fun withdrawCost(entity: BuildOrder) {
+    private fun withdrawCost(entity: BuildOrder) {
         val assetDefId = checkNotNull(entity.assetDef?.id)
         val assetDef = assetDefService.findById(assetDefId)
 
