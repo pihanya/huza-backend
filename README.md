@@ -59,3 +59,7 @@ Build backend and deploy to Helios:
 ```shell
 scripts/deploy_to_helios.sh
 ```
+
+```shell
+scripts/run_on_helios.sh
+```
