@@ -38,7 +38,7 @@ public class BuildOrderTests extends SeleniumTestBase {
 
         buildOrdersPage.getAddBuildOrderButton().click();
         this.redirectWait(buildOrdersPageUrl);
-        buildingType = "Таверна";
+        buildingType = "Сельская управа";
         comment = "Еще срочнее нужно!";
         this.createBuildOrder(headOrder, buildingType, comment);
 

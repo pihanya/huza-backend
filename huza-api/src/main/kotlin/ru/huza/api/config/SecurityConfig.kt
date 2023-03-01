@@ -83,6 +83,8 @@ class SecurityConfig {
                         antMatcher("${HttpEndpoints.AUTH}/login"),
                         antMatcher("${HttpEndpoints.AUTH}/info"),
                         antMatcher("${HttpEndpoints.FILES}/download/**"),
+                        antMatcher("/auth/login"),
+                        antMatcher("/auth/info"),
                     ).permitAll()
                     .requestMatchers(
                         antMatcher(HttpEndpoints.ACTUATOR),
